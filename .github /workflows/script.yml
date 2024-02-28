@@ -1,0 +1,33 @@
+name: Execute Python script for each folder
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  execute_python_script:
+    name: Execute Python script
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install required dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Execute Python script for each folder
+      run: |
+        folders=$(ls -d ./Data/*/)
+        for folder in $folders
+        do
+          folder_name=$(basename $folder)
+          python JRA3Q.py ${folder_name}00
+        done
