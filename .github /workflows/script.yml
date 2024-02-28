@@ -31,3 +31,14 @@ jobs:
           folder_name=$(basename $folder)
           python JRA3Q.py ${folder_name}00
         done
+        
+    - name: Commit and Push Changes
+        run: |
+          echo ${{ secrets.TOKEN }}
+          echo "https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git add ./*.jpg
+          git diff --cached --quiet || git commit -m "Add Pictures"
+          git push origin main
