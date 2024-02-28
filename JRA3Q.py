@@ -57,7 +57,6 @@ except ValueError:
     print("日時の形式が正しくありません。正しい形式は 'yyyymmddhh' です。")
     sys.exit(1)
 
-#
 print("Plotting:",dt)
 i_year=dt.year
 i_month=dt.month
