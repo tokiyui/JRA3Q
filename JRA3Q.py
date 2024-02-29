@@ -320,7 +320,7 @@ for i in range(ept.shape[0]):
 autofront = gaussian_filter(autofront, sigma=4.0) 
 
 autofront[tfp < 0] = np.nan
-#autofront[vort < 0] = np.nan
+autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
