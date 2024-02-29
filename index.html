@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>画像選択</title>
+<script>
+    // GitHub API を使用してカレントディレクトリ内の画像ファイルの名前を取得する関数
+    async function fetchImageNames() {
+        const response = await fetch('https://api.github.com/repos/tokiyui/JRA3Q/contents/');
+        const data = await response.json();
+        const imageNames = data.filter(item => item.type === 'file' && (item.name.endsWith('Z_500hPa.jpg') || item.name.endsWith('Z_surf.jpg')))
+                               .map(item => item.name.split('.')[0]);
+        return imageNames;
+    }
+
+    // プルダウンメニューを作成する関数
+    async function populateDropdown() {
+        const selectElement = document.getElementById('image-select');
+        const imageNames = await fetchImageNames();
+
+        imageNames.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.text = name;
+            selectElement.appendChild(option);
+        });
+    }
+
+    // 選択した画像を表示する関数
+    function displayImages() {
+        const selectedValue = document.getElementById('image-select').value;
+        const image500hPa = `${selectedValue}Z_500hPa.jpg`;
+        const imageSurface = `${selectedValue}Z_surf.jpg`;
+        
+        document.getElementById('image-500hPa').src = image500hPa;
+        document.getElementById('image-surface').src = imageSurface;
+    }
+</script>
+</head>
+<body onload="populateDropdown()">
+    <label for="image-select">画像を選択してください:</label>
+    <select id="image-select" onchange="displayImages()">
+        <option value="" selected disabled hidden>Choose here</option>
+    </select><br><br>
+    <img id="image-500hPa" src="" alt="500hPa Image" width="300"><br><br>
+    <img id="image-surface" src="" alt="Surface Image" width="300">
+</body>
+</html>
