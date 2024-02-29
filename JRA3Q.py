@@ -70,7 +70,7 @@ i_hourZ=dt.hour
 (latS, latN, lonW, lonE) = (-20, 80, 70, 190)  # ASAS領域
 
 ## 読み込む要素の指定
-elem_s_names = ['tciwv', 'pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v']
+elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] ########'tciwv',
 elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot',]
 
 ## データサイズを取得するために、GRIB2を読み込む
