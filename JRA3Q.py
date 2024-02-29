@@ -151,9 +151,7 @@ dss['conv'] = mpcalc.divergence(dss['10u'],dss['10v'])
 dss['shar_para'] = dss['vort'] - dss['conv']
 
 # ガウシアンフィルタを適用
-data_msl = dss[elem_s_names[4]].values
-sigma = 2.0  # ガウシアンフィルタの標準偏差
-smoothed_msl = gaussian_filter(data_msl, sigma=sigma)
+smoothed_msl = gaussian_filter(dss[elem_s_names[4]].values, sigma=3.0)
 dss[elem_s_names[4]] = (["lat", "lon"], smoothed_msl * units(elem_units[4]))
 
 ##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
@@ -247,9 +245,8 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'],ds4['tmp'],ds4
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # ガウシアンフィルタを適用
-sigma = 2.0  # ガウシアンフィルタの標準偏差
-smoothed_hgt = gaussian_filter(ds4['hgt'].values, sigma=sigma)
-smoothed_tmp = gaussian_filter(ds4['tmp'].values, sigma=sigma)
+smoothed_hgt = gaussian_filter(ds4['hgt'].values, sigma=3.0)
+smoothed_tmp = gaussian_filter(ds4['tmp'].values, sigma=3.0)
 
 # ガウシアンフィルタを適用したデータを元のデータセットに代入
 ds4['hgt'] = (["level", "lat", "lon"], smoothed_hgt * units(elem_units[1]))
@@ -269,13 +266,12 @@ v5 = ds4['vgrd'].sel(level=500)
 vort = dss['vort'].values
 
 # ガウシアンフィルタを適用
-sigma = 2.0  # ガウシアンフィルタの標準偏差
-ept = gaussian_filter(ept, sigma=sigma)
-u = gaussian_filter(u, sigma=sigma)
-v = gaussian_filter(v, sigma=sigma)
-u5 = gaussian_filter(u5, sigma=sigma)
-v5 = gaussian_filter(v5, sigma=sigma)
-vort = gaussian_filter(vort, sigma=sigma)
+ept = gaussian_filter(ept, sigma=3.0)
+u = gaussian_filter(u, sigma=3.0)
+v = gaussian_filter(v, sigma=3.0)
+u5 = gaussian_filter(u5, sigma=3.0)
+v5 = gaussian_filter(v5, sigma=3.0)
+vort = gaussian_filter(vort, sigma=3.0)
 
 # Front Genesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
@@ -294,53 +290,32 @@ lat = ds4['lat'].values
 #        f[i, j] = vort[i, j] * mgntd_grad_ept[i, j] / math.sin(math.radians(lat[i]))
 
 # ガウシアンフィルタを適用
-sigma = 1.0  # ガウシアンフィルタの標準偏差
-mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=sigma) 
+#mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=1.0) 
 
 # LOCATEFUNCTIONの水平傾度を計算する
 grad_mgntd_grad_ept = np.array(mpcalc.gradient(mgntd_grad_ept, deltas=(dy, dx)))
 
 # tfpを計算する
-tfp = np.zeros_like(ept)
-for i in range(ept.shape[0]):
-    for j in range(ept.shape[1]):
-        tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
-        #tfp = (grad_mgntd_grad_ept[0] * v5 - grad_mgntd_grad_ept[1] * u5) / (u5**2 + v5**2)
+#tfp = np.zeros_like(ept)
+#for i in range(ept.shape[0]):
+#    for j in range(ept.shape[1]):
+#        tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
 
 # ガウシアンフィルタを適用
-sigma = 1.0  # ガウシアンフィルタの標準偏差
-fg = gaussian_filter(fg, sigma=sigma) 
-tfp = gaussian_filter(tfp, sigma=sigma) 
+fg = gaussian_filter(fg, sigma=1.0) 
 
-# TFPの水平傾度を計算する
+# 水平傾度を計算する
 grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
-mgntd_grad_fg = np.sqrt(grad_fg[0]**2 + grad_fg[1]**2)
 
-# TFPの極大を抽出する
+# 極大を抽出する
 autofront = np.zeros_like(ept)
 for i in range(ept.shape[0]):
     for j in range(ept.shape[1]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
         #autofront = (grad_fg[0] * v5 - grad_fg[1] * u5) / (u5**2 + v5**2)
-        
-# fの水平傾度を計算する
-#grad_f = np.array(mpcalc.gradient(f, deltas=(dy, dx))) 
- 
- 
- 
-        
-# fの極大を抽出する
-#autofront = np.zeros_like(ept)
-#for i in range(ept.shape[0]):
-    #for j in range(ept.shape[1]):
-        #autofront[i, j] = np.dot(grad_f[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
-
-#grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
-#mgntd_grad_fg = np.sqrt(grad_fg[0]**2 + grad_fg[1]**2)
 
 # ガウシアンフィルタを適用
-sigma = 1.0  # ガウシアンフィルタの標準偏差
-autofront = gaussian_filter(autofront, sigma=sigma) 
+autofront = gaussian_filter(autofront, sigma=1.0) 
 
 autofront[tfp < 0] = np.nan
 autofront[vort < 0] = np.nan
