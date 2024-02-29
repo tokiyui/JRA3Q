@@ -20,19 +20,8 @@ import matplotlib as mpl
 import scipy.ndimage as ndimage
 from scipy.ndimage import gaussian_filter, median_filter
 
-### データ読み込みのための指定
-##! GRIB2の解像度の指定
-#  Trueの場合は、 anl_surf/,    fcst_phy2m/
-#  Falseの場合は、anal_surf125/,fcst_phy2m125/
-f_125 = True
-
-if f_125:   
-    file_nm_temp_s = 'anl_surf125.{0:4d}{1:02d}{2:02d}{3:02d}'
-    file_nm_temp_p = 'anl_p125_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'
-else:
-    file_nm_temp_s = 'anl_surf.{0:4d}{1:02d}{2:02d}{3:02d}'
-    file_nm_temp_p = 'anl_p.{0:4d}{1:02d}{2:02d}{3:02d}'
-        
+file_nm_temp_s = 'anl_surf125.{0:4d}{1:02d}{2:02d}{3:02d}'
+file_nm_temp_p = 'anl_p125_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
 folder_nm_temp = './Data/{0:4d}{1:02d}{2:02d}/'
 
 ##! 読み込み期間の最初の時刻（UTC）,読み込む時刻の数、時間間隔の指定
@@ -505,18 +494,9 @@ dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
 ##! 図のSIZE指定inch 
 fig_size = (10,8)
 
-#! 表示要素指定
-flg_tmp = False  # 気温 True or False
-flg_TTd = False  # 湿り True or False
-
 #! 矢羽の表示間隔
-if f_125 or n_area==100:
-    #wind_slice_n = 1  
-    wind_slice_n = 2  
-    wind_length = 4.8
-else:
-    wind_slice_n = 4
-    wind_length = 4.8
+wind_slice_n = 2  
+wind_length = 4.8
 
 #! 等値線の間隔を指定
 levels_tmp0  =np.arange(-60,60,3) # 気温
