@@ -561,22 +561,6 @@ gl.ylocator = mticker.FixedLocator(yticks)
 # 客観前線
 ax.contourf(ds4['lon'], ds4['lat'], ept, boundsTFP, cmap=cmapTFP, norm=normTFP, transform=latlon_proj) # 陰影を描く
 
-## 湿数
-if flg_TTd :
-    caption_text = " T-Td"
-    ttd_hatchf = ax.contourf(dss['lon'], dss['lat'],dss['2ttd'], level_ttd, colors=cmap_ttd, extend='max', alpha=0.15, transform=latlon_proj)
-    # colorbarの位置と大きさ指定                                                     
-    #  add_axes([左端の距離, 下端からの距離, 横幅, 縦幅])                            
-    #ax_reld = fig.add_axes([0.1, 0.0, 0.8, 0.02])  # 図の下
-    ax_ttd = fig.add_axes([0.1, 0.1, 0.8, 0.02])  # 図の中
-    cb_ttd = fig.colorbar(ttd_hatchf, orientation='horizontal', shrink=0.74, aspect=40, pad=0.01, cax=ax_ttd)
-
-# 等温度線 実線
-if flg_tmp:
-    caption_text = caption_text + " Tmp" 
-    cn_tmp0 = ax.contour(dss['lon'], dss['lat'], dss['2t'], colors='green', alpha=0.5, linewidths=1.0, levels=levels_tmp0, transform=latlon_proj)
-    ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
-                                                                                
 ## 等圧線
 caption_text = " Pres(hPa)" 
 cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
