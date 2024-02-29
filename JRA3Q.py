@@ -263,7 +263,8 @@ v = ds4['vgrd'].sel(level=frontlev)
 #u5 = ds4['ugrd'].sel(level=500)
 #v5 = ds4['vgrd'].sel(level=500)
 
-vort = dss['vort'].values
+#vort = dss['vort'].values
+vort = ds4['vort'].sel(level=frontlev)
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=4.0)
