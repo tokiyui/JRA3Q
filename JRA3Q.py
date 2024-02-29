@@ -485,7 +485,7 @@ normTFP = mpl.colors.BoundaryNorm(boundsTFP, cmapTFP.N)
 # 基準の経度などのデフォルト
 set_central_longitude=140
 flag_border=False
-#
+
 ##! 地図の描画範囲を指定
 # 0:極東、1:ASAS領域
 n_area=0
@@ -506,12 +506,8 @@ dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
 fig_size = (10,8)
 
 #! 表示要素指定
-flg_spl = True  # 等圧線 True or False
 flg_tmp = False  # 気温 True or False
-flg_pt  = False  # 温位の描画 True or False
-flg_ept = False  # 相当温位の描画  True or False
 flg_TTd = False  # 湿り True or False
-flg_Sp  = False  # シアーパラメーター  True or False
 
 #! 矢羽の表示間隔
 if f_125 or n_area==100:
@@ -521,17 +517,9 @@ if f_125 or n_area==100:
 else:
     wind_slice_n = 4
     wind_length = 4.8
-#
-#! 流線の表示
-disp_stream_line = False
 
 #! 等値線の間隔を指定
 levels_tmp0  =np.arange(-60,60,3) # 気温
-levels_pt  = np.arange(222, 360, 3.0)  # 温位
-levels_ptb = np.arange(240, 360, 15.0) # 温位 太線
-levels_ept  = np.arange(222, 360, 3.0)  # 相当温位
-levels_eptb = np.arange(240, 360, 15.0) # 相当温位
-
 levels_pre  = np.arange(900.0, 1080.0, 4.0) # 気圧
 levels_preh = np.arange(998.0, 1022.0, 4.0) # 気圧 点線
 levels_preb = np.arange(900.0, 1080.0,20.0) # 気圧 太線 数字
@@ -539,14 +527,7 @@ levels_preb = np.arange(900.0, 1080.0,20.0) # 気圧 太線 数字
 ##! 気温　等値線
 levels_tmp =np.arange(-60,342,3)
 levels_tmp1  =np.arange(-60, 42, 15) # 等値線 太線  
-#! 湿数
-level_ttd=[0,0.3,1.2,3,18]
-cmap_ttd =['green','yellowgreen','0.7','white','yellow']
-#
-#! シアーパラメーター
-level_sp=[1, 3, 5, 10]
-cmap_sp=['cyan', 'blue', 'palegreen', 'green']
-#
+
 ## 単位の変更
 dss['2t']  = dss['2t'].metpy.convert_units(units.degC)
 dss['10u'] = dss['10u'].metpy.convert_units('knots')
@@ -576,8 +557,7 @@ yticks=np.arange(-90,90.1,dlat)
 gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
 gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
-# キャプションテキスト
-caption_text=""
+
 # 客観前線
 ax.contourf(ds4['lon'], ds4['lat'], ept, boundsTFP, cmap=cmapTFP, norm=normTFP, transform=latlon_proj) # 陰影を描く
 
@@ -598,12 +578,11 @@ if flg_tmp:
     ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
                                                                                 
 ## 等圧線
-if flg_spl :
-    caption_text = caption_text + " Pres(hPa)" 
-    cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
-    #cn_preh = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preh, colors='black', linewidths=1.0, linestyles='dashed', transform=latlon_proj)
-    cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
-    ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
+caption_text = caption_text + " Pres(hPa)" 
+cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
+#cn_preh = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preh, colors='black', linewidths=1.0, linestyles='dashed', transform=latlon_proj)
+cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
+ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
 contour_tfp = ax.contour(ds4['lon'], ds4['lat'], autofront, levels=[0], colors='green', linewidths=2.0, linestyles='solid', transform=latlon_proj) 
 
