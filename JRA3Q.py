@@ -578,7 +578,7 @@ if flg_tmp:
     ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
                                                                                 
 ## 等圧線
-caption_text = caption_text + " Pres(hPa)" 
+caption_text = " Pres(hPa)" 
 cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
 #cn_preh = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preh, colors='black', linewidths=1.0, linestyles='dashed', transform=latlon_proj)
 cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
