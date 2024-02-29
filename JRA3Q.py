@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# JRA3Q GRIB2
-#  地上面データ　複数時刻を読み込み、総観場の天気図を作成
-#
-#    2023/10/05 Ryuta Kurora
-#
 import numpy as np
 import pygrib
 import sys
@@ -62,12 +57,9 @@ i_year=dt.year
 i_month=dt.month
 i_day=dt.day
 i_hourZ=dt.hour
-#
-#
+
 ##! 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
-#(latS, latN, lonW, lonE) = (33, 38, 137, 142)  # 東日本付近
-#(latS, latN, lonW, lonE) = (18, 45, 115, 145)  # 日本付近
-(latS, latN, lonW, lonE) = (-20, 80, 70, 190)  # ASAS領域
+(latS, latN, lonW, lonE) = (-20, 80, 70, 190)
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] ########'tciwv',
@@ -76,9 +68,8 @@ elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgr
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
 file_nm = folder_nm + file_nm_temp_s.format(i_year,i_month,i_day,i_hourZ)
-#print(file_nm)
 grbs = pygrib.open(file_nm)
-#
+
 ## 変数の名称や単位の情報を保存
 # shortName,parameterName,parameterUnitsをListにsetする
 all_elem_names = []
@@ -86,7 +77,6 @@ all_elem_s_names = []
 all_elem_units = []
 n = 1
 for g in grbs:
-    #print(g)
     # 不明だが、不要なデータを扱わないためのif文
     if g['parameterUnits'] != g['parameterName']:
         #print(n,g['shortName'],":",g['parameterName'],g['parameterUnits'])
@@ -105,18 +95,10 @@ e_size = len(elem_s_names)
 elem_names = []
 elem_units = []
 
-### エラーを吐いたので以下4行を差し替え
-#for el in elem_s_names:
-#    n_ = all_elem_s_names.index(el)
-#    elem_names.append(all_elem_names[n_])
-#    elem_units.append(all_elem_units[n_])
 for el in elem_s_names:
-    if el in all_elem_s_names:
-        n_ = all_elem_s_names.index(el)
-        elem_names.append(all_elem_names[n_])
-        elem_units.append(all_elem_units[n_])
-    else:
-        print(f"要素 '{el}' はリスト内に存在しません。")
+    n_ = all_elem_s_names.index(el)
+    elem_names.append(all_elem_names[n_])
+    elem_units.append(all_elem_units[n_])
 
 ## 空間のデータサイズを取得
 vals_, lats_, lons_ = grbs[1].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
@@ -183,40 +165,18 @@ dss['conv'] = mpcalc.divergence(dss['10u'],dss['10v'])
 # シアーパラメーター
 dss['shar_para'] = dss['vort'] - dss['conv']
 
-
-
-
-
-
 # ガウシアンフィルタを適用
 data_msl = dss[elem_s_names[4]].values
 sigma = 1.0  # ガウシアンフィルタの標準偏差
 smoothed_msl = gaussian_filter(data_msl, sigma=sigma)
 dss[elem_s_names[4]] = (["lat", "lon"], smoothed_msl * units(elem_units[4]))
 
-
-
-
-
-
-
-
-
-
-
-
 ##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
-
-##! 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
-#(latS, latN, lonW, lonE) = (33, 38, 137, 142)  # 東日本付近
-#(latS, latN, lonW, lonE) = (25, 45, 122, 145)  # 日本付近
-(latS, latN, lonW, lonE) = (-20, 80, 70, 190)  # ASAS領域
 
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
 file_nm = folder_nm + file_nm_temp_p.format(elems[0],i_year,i_month,i_day,i_hourZ)
-#print(file_nm)
 grbs = pygrib.open(file_nm)
 
 ## 要素数
@@ -238,7 +198,7 @@ val4_ = np.zeros([e_size, l_size, lat_size, lon_size])
 ## 変数の名称や単位
 elem_names = []
 elem_units = []
-#
+
 ## 要素のループ
 folder_nm = folder_nm_temp.format(dt.year,dt.month,dt.day)
 for i_elem, elem in enumerate(elems):
@@ -246,14 +206,11 @@ for i_elem, elem in enumerate(elems):
     file_nm = folder_nm + file_nm_temp_p.format(elem,dt.year,dt.month,dt.day,dt.hour)
     #print(elem," : ",file_nm)
     grbs = pygrib.open(file_nm)
-    #
     ## 処理する高度面の選択
     grb_tag = grbs(level=lambda l:l >= tagLp)
-    #
     ## 要素名や単位の取得
     elem_names.append(grb_tag[0].parameterName)
     elem_units.append(grb_tag[0].parameterUnits)
-        #
     ## レベルのループ
     for i_lev in range(l_size):
         val4_[i_elem][i_lev], _, _ = grb_tag[i_lev].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
@@ -301,33 +258,8 @@ ds4 = ds4.metpy.parse_cf()
 ds4['ttd'] = ds4['tmp'] - ds4['depr']
 ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'],ds4['tmp'],ds4['ttd'])
 
-
 # 相対渦度
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # ガウシアンフィルタを適用
 data_hgt = ds4['hgt'].values  
@@ -337,23 +269,15 @@ sigma = 1.0  # ガウシアンフィルタの標準偏差
 smoothed_hgt = gaussian_filter(data_hgt, sigma=sigma)
 smoothed_tmp = gaussian_filter(data_tmp, sigma=sigma)
 
-# ガウシアンフィルタを適用したデータを元のデータセットに代入します。
+# ガウシアンフィルタを適用したデータを元のデータセットに代入
 ds4['hgt'] = (["level", "lat", "lon"], smoothed_hgt * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], smoothed_tmp * units(elem_units[3]))
-
-
-
-
-
-
 
 # 前線客観解析
 # 解析に用いる高度
 frontlev=925
 
-#ept = ds4['ept'].sel(level=frontlev)
-#ept = ds4['ept'].sel(level=frontlev)
-ept = ds4['ept'].sel(level=frontlev)
+ept = (ds4['ept'].sel(level=frontlev)+ds4['tmp'].sel(level=850))/2.0
 u = ds4['ugrd'].sel(level=frontlev)
 v = ds4['vgrd'].sel(level=frontlev)
 
@@ -364,16 +288,13 @@ vort = dss['vort'].values
 
 
 # ガウシアンフィルタを適用
-sigma = 4.0  # ガウシアンフィルタの標準偏差
+sigma = 1.0  # ガウシアンフィルタの標準偏差
 ept = gaussian_filter(ept, sigma=sigma)
 u = gaussian_filter(u, sigma=sigma)
 v = gaussian_filter(v, sigma=sigma)
 u5 = gaussian_filter(u5, sigma=sigma)
 v5 = gaussian_filter(v5, sigma=sigma)
 vort = gaussian_filter(vort, sigma=sigma)
-#ept = median_filter(ept, size=20)
-#u = median_filter(u, size=20)
-#v = median_filter(v, size=20)
 
 # Front Genesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
@@ -384,8 +305,6 @@ grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-
-#print(ds4['lat'].dims,ds4['vort'].dims)
 
 lat = ds4['lat'].values
 
@@ -468,11 +387,6 @@ autofront[u5<-abs(v5)] = np.nan
 #autofront[vort < 0] = np.nan
 #autofront[fg < 0] = np.nan
 #autofront[fct < 0] = np.nan
-
-
-
-
-
 
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
@@ -599,8 +513,6 @@ cmapVOR.set_over('#cd751d')
 boundsVOR = [0,0.00004,0.00008,0.00012,0.00016,0.00020,0.00024]
 normVOR = mpl.colors.BoundaryNorm(boundsVOR, cmapVOR.N)
 vminVOR, vmaxVOR = min(boundsVOR), max(boundsVOR)
-
-
 
 # TFP
 cmapTFP = mpl.colors.ListedColormap(['greenyellow', 'yellow', 'gold', 'orange', 'red'])
@@ -844,7 +756,7 @@ wind_slice2 = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
 ax.barbs(dss['lon'][wind_slice2[0]],     dss['lat'][wind_slice2[1]], 
          dss['10u'].values[wind_slice2], dss['10v'].values[wind_slice2],
          length=wind_length, pivot='middle', color='black', transform=latlon_proj)
-#
+
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
 maxid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0)
@@ -861,7 +773,7 @@ for i in range(len(maxid[0])):
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue",
             transform=ax.transAxes,
             verticalalignment="top", horizontalalignment="center")
-#
+
 ## L stamp
 #minid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0, flag=1)
 minid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0, flag=1)
@@ -1021,7 +933,7 @@ for i in range(len(minid[0])):
   if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
     ax.text(wlon, wlat, 'L', size=24, color="red",
             ha='center', va='center', transform=latlon_proj)
-#
+
 ## 海岸線                                                                                                                               
 ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
 if (flag_border):
@@ -1036,11 +948,9 @@ gl = ax.gridlines(crs=ccrs.PlateCarree()
          , linewidth=1, alpha=0.8)
 gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
-#                                                                                          
+                                                                                        
 ## Title                                                                       
 fig.text(0.5,0.01,"JRA3Q " + dt_str + " Z500,VORT",ha='center',va='bottom', size=18)
-#fig.text(0.5,0.01,"JRA3Q " + dt_str + caption_text,ha='center',va='bottom', size=18)
 ## Output
-#output_fig_nm="{}Z_surf.jpg".format(dt.strftime("%Y%m%d%H"))
 output_fig_nm="{}Z_500hPa.jpg".format(dt.strftime("%Y%m%d%H"))
 plt.savefig(output_fig_nm, format="jpg")
