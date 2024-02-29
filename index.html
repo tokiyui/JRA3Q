@@ -3,47 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>画像選択</title>
+<title>Image Viewer</title>
 <script>
-    // GitHub API を使用してカレントディレクトリ内の画像ファイルの名前を取得する関数
-    async function fetchImageNames() {
-        const response = await fetch('https://api.github.com/repos/tokiyui/JRA3Q/contents/');
-        const data = await response.json();
-        const imageNames = data.filter(item => item.type === 'file' && (item.name.endsWith('Z_500hPa.jpg') || item.name.endsWith('Z_surf.jpg')))
-                               .map(item => item.name.split('.')[0]);
-        return imageNames;
+window.onload = function() {
+    // ディレクトリ内のファイルを取得してプルダウンメニューを作成する関数
+    function populateDropdown() {
+        const directoryPath = './'; // カレントディレクトリ
+        const dropdown = document.getElementById('imageSelect');
+
+        fetch(directoryPath)
+            .then(response => response.text())
+            .then(text => {
+                const parser = new DOMParser();
+                const htmlDocument = parser.parseFromString(text, 'text/html');
+                const files = Array.from(htmlDocument.querySelectorAll('a')).map(a => a.getAttribute('href'));
+
+                // 10桁の数字にマッチするファイル名をフィルタリング
+                const imageFiles = files.filter(file => /^[0-9]{10}Z_(500hPa|surf)\.jpg$/.test(file));
+
+                // プルダウンメニューを作成
+                imageFiles.forEach(file => {
+                    const option = document.createElement('option');
+                    option.text = file.substring(0, 10); // ファイル名から10桁の数字を取得
+                    dropdown.add(option);
+                });
+            })
+            .catch(error => console.error('Error fetching directory:', error));
     }
 
-    // プルダウンメニューを作成する関数
-    async function populateDropdown() {
-        const selectElement = document.getElementById('image-select');
-        const imageNames = await fetchImageNames();
-
-        imageNames.forEach(name => {
-            const option = document.createElement('option');
-            option.value = name;
-            option.text = name;
-            selectElement.appendChild(option);
-        });
+    // プルダウンが選択されたときに画像を表示する関数
+    function showImages() {
+        const selectedValue = document.getElementById('imageSelect').value;
+        const image500hPa = selectedValue + 'Z_500hPa.jpg';
+        const imageSurf = selectedValue + 'Z_surf.jpg';
+        document.getElementById('image500hPa').src = image500hPa;
+        document.getElementById('imageSurf').src = imageSurf;
     }
 
-    // 選択した画像を表示する関数
-    function displayImages() {
-        const selectedValue = document.getElementById('image-select').value;
-        const image500hPa = `${selectedValue}Z_500hPa.jpg`;
-        const imageSurface = `${selectedValue}Z_surf.jpg`;
-        
-        document.getElementById('image-500hPa').src = image500hPa;
-        document.getElementById('image-surface').src = imageSurface;
-    }
+    populateDropdown(); // ページロード時にプルダウンメニューを作成
+};
 </script>
 </head>
-<body onload="populateDropdown()">
-    <label for="image-select">画像を選択してください:</label>
-    <select id="image-select" onchange="displayImages()">
-        <option value="" selected disabled hidden>Choose here</option>
-    </select><br><br>
-    <img id="image-500hPa" src="" alt="500hPa Image" width="300"><br><br>
-    <img id="image-surface" src="" alt="Surface Image" width="300">
+<body>
+<h2>画像を選択してください：</h2>
+<select id="imageSelect" onchange="showImages()">
+    <!-- プルダウンメニューはfetchによって動的に生成されます -->
+</select>
+<br><br>
+<div>
+    <h3>500hPaの画像：</h3>
+    <img id="image500hPa" src="" alt="500hPaの画像">
+</div>
+<div>
+    <h3>地上の画像：</h3>
+    <img id="imageSurf" src="" alt="地上の画像">
+</div>
 </body>
 </html>
