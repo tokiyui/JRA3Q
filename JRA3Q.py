@@ -274,7 +274,7 @@ for i in range(ept.shape[0]):
         tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
 
 # ガウシアンフィルタを適用
-fg = gaussian_filter(fg, sigma=2.0) 
+fg = gaussian_filter(fg, sigma=4.0) 
 tfp = gaussian_filter(fg, sigma=2.0) 
 
 # 水平傾度を計算する
@@ -288,7 +288,7 @@ for i in range(ept.shape[0]):
         #autofront = (grad_fg[0] * v5 - grad_fg[1] * u5) / (u5**2 + v5**2)
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=1.0) 
+autofront = gaussian_filter(autofront, sigma=4.0) 
 
 #autofront[tfp < 0] = np.nan
 #autofront[vort < 0] = np.nan
