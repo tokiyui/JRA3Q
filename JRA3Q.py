@@ -245,53 +245,25 @@ vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
 
-# Front Genesis
+# FrontoGenesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
 grad_ept = np.array(mpcalc.gradient(ept, deltas=(dy, dx)))
-mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
+mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=2.0)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
-
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-
-# tfpを計算する
-lat = ds4['lat'].values
-#f = np.zeros_like(vort)
-#for i in range(vort.shape[0]):
-#    for j in range(vort.shape[1]):
-#        f[i, j] = vort[i, j] * mgntd_grad_ept[i, j] / math.sin(math.radians(lat[i]))
-
-# ガウシアンフィルタを適用
-mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=2.0) 
-
-# LOCATEFUNCTIONの水平傾度を計算する
-grad_mgntd_grad_ept = np.array(mpcalc.gradient(mgntd_grad_ept, deltas=(dy, dx)))
-
-# tfpを計算する
-tfp = np.zeros_like(ept)
-for i in range(ept.shape[0]):
-    for j in range(ept.shape[1]):
-        tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
-
-# ガウシアンフィルタを適用
-fg = gaussian_filter(fg, sigma=4.0) 
-tfp = gaussian_filter(fg, sigma=2.0) 
-
-# 水平傾度を計算する
-grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
+grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=2.0), deltas=(dy, dx)))
 
 # 極大を抽出する
 autofront = np.zeros_like(ept)
 for i in range(ept.shape[0]):
     for j in range(ept.shape[1]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
-        #autofront = (grad_fg[0] * v5 - grad_fg[1] * u5) / (u5**2 + v5**2)
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=4.0) 
+autofront = gaussian_filter(autofront, sigma=2.0) 
 
-#autofront[tfp < 0] = np.nan
-autofront[vort < 0] = np.nan
+#autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
