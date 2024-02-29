@@ -151,7 +151,7 @@ dss['conv'] = mpcalc.divergence(dss['10u'],dss['10v'])
 dss['shar_para'] = dss['vort'] - dss['conv']
 
 # ガウシアンフィルタを適用
-smoothed_msl = gaussian_filter(dss[elem_s_names[4]].values, sigma=4.0)
+smoothed_msl = gaussian_filter(dss[elem_s_names[2]].values, sigma=4.0)
 dss[elem_s_names[3]] = (["lat", "lon"], smoothed_msl * units(elem_units[4]))
 
 ##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
