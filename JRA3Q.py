@@ -151,7 +151,7 @@ dss['conv'] = mpcalc.divergence(dss['10u'],dss['10v'])
 dss['shar_para'] = dss['vort'] - dss['conv']
 
 # ガウシアンフィルタを適用
-smoothed_msl = gaussian_filter(dss[elem_s_names[4]].values, sigma=3.0)
+smoothed_msl = gaussian_filter(dss[elem_s_names[4]].values, sigma=4.0)
 dss[elem_s_names[4]] = (["lat", "lon"], smoothed_msl * units(elem_units[4]))
 
 ##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
@@ -245,8 +245,8 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'],ds4['tmp'],ds4
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # ガウシアンフィルタを適用
-smoothed_hgt = gaussian_filter(ds4['hgt'].values, sigma=3.0)
-smoothed_tmp = gaussian_filter(ds4['tmp'].values, sigma=3.0)
+smoothed_hgt = gaussian_filter(ds4['hgt'].values, sigma=4.0)
+smoothed_tmp = gaussian_filter(ds4['tmp'].values, sigma=2.0)
 
 # ガウシアンフィルタを適用したデータを元のデータセットに代入
 ds4['hgt'] = (["level", "lat", "lon"], smoothed_hgt * units(elem_units[1]))
@@ -260,18 +260,18 @@ ept = (ds4['ept'].sel(level=frontlev)+ds4['tmp'].sel(level=850))/2.0
 u = ds4['ugrd'].sel(level=frontlev)
 v = ds4['vgrd'].sel(level=frontlev)
 
-u5 = ds4['ugrd'].sel(level=500)
-v5 = ds4['vgrd'].sel(level=500)
+#u5 = ds4['ugrd'].sel(level=500)
+#v5 = ds4['vgrd'].sel(level=500)
 
 vort = dss['vort'].values
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=3.0)
-u = gaussian_filter(u, sigma=3.0)
-v = gaussian_filter(v, sigma=3.0)
-u5 = gaussian_filter(u5, sigma=3.0)
-v5 = gaussian_filter(v5, sigma=3.0)
-vort = gaussian_filter(vort, sigma=3.0)
+ept = gaussian_filter(ept, sigma=4.0)
+u = gaussian_filter(u, sigma=4.0)
+v = gaussian_filter(v, sigma=4.0)
+#u5 = gaussian_filter(u5, sigma=4.0)
+#v5 = gaussian_filter(v5, sigma=4.0)
+vort = gaussian_filter(vort, sigma=1.0)
 
 # Front Genesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
