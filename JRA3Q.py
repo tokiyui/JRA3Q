@@ -312,18 +312,11 @@ lat = ds4['lat'].values
 #        f[i, j] = vort[i, j] * mgntd_grad_ept[i, j] / math.sin(math.radians(lat[i]))
 
 # ガウシアンフィルタを適用
-#sigma = 1.0  # ガウシアンフィルタの標準偏差
-#mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=sigma) 
-
-#NP前線ではTの勾配も勾配方向
-#locatefunction = np.zeros_like(ept)
-#for i in range(ept.shape[0]):
-#    for j in range(ept.shape[1]):
-#        locatefunction[i, j] = np.dot(grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])
+sigma = 1.0  # ガウシアンフィルタの標準偏差
+mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=sigma) 
 
 # LOCATEFUNCTIONの水平傾度を計算する
 grad_mgntd_grad_ept = np.array(mpcalc.gradient(mgntd_grad_ept, deltas=(dy, dx)))
-#grad_mgntd_grad_ept = np.array(mpcalc.gradient(locatefunction, deltas=(dy, dx)))
 
 # tfpを計算する
 tfp = np.zeros_like(ept)
@@ -333,7 +326,7 @@ for i in range(ept.shape[0]):
         #tfp = (grad_mgntd_grad_ept[0] * v5 - grad_mgntd_grad_ept[1] * u5) / (u5**2 + v5**2)
 
 # ガウシアンフィルタを適用
-sigma = 4.0  # ガウシアンフィルタの標準偏差
+sigma = 1.0  # ガウシアンフィルタの標準偏差
 fg = gaussian_filter(fg, sigma=sigma) 
 tfp = gaussian_filter(tfp, sigma=sigma) 
 
@@ -470,23 +463,6 @@ def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
     peaks_index=(np.array(newx),np.array(newy))
     return peaks_index
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # カラーマップの設定
 #  渦度
 cmapVOR = mpl.colors.ListedColormap(['#fff2e5','#fccd9e','#f9b571','#f3a556','#ed953d','#e68524'])
@@ -505,27 +481,6 @@ boundsTFP = [327,336,345,348,351,354]
 #boundsTFP = [0.0, 100]
 normTFP = mpl.colors.BoundaryNorm(boundsTFP, cmapTFP.N)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### 天気図作図のための指定
 # 基準の経度などのデフォルト
 set_central_longitude=140
@@ -542,8 +497,6 @@ else:
 # 緯線・経線の指定
 dlon,dlat=10,10   # 10度ごとに
 
-
-
 ## タイトル文字列用
 # 初期時刻の文字列
 dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
@@ -551,7 +504,7 @@ dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
 ### 描画の指定
 ##! 図のSIZE指定inch 
 fig_size = (10,8)
-#
+
 #! 表示要素指定
 flg_spl = True  # 等圧線 True or False
 flg_tmp = False  # 気温 True or False
@@ -559,7 +512,7 @@ flg_pt  = False  # 温位の描画 True or False
 flg_ept = False  # 相当温位の描画  True or False
 flg_TTd = False  # 湿り True or False
 flg_Sp  = False  # シアーパラメーター  True or False
-#
+
 #! 矢羽の表示間隔
 if f_125 or n_area==100:
     #wind_slice_n = 1  
@@ -571,14 +524,14 @@ else:
 #
 #! 流線の表示
 disp_stream_line = False
-#
+
 #! 等値線の間隔を指定
 levels_tmp0  =np.arange(-60,60,3) # 気温
 levels_pt  = np.arange(222, 360, 3.0)  # 温位
 levels_ptb = np.arange(240, 360, 15.0) # 温位 太線
 levels_ept  = np.arange(222, 360, 3.0)  # 相当温位
 levels_eptb = np.arange(240, 360, 15.0) # 相当温位
-#
+
 levels_pre  = np.arange(900.0, 1080.0, 4.0) # 気圧
 levels_preh = np.arange(998.0, 1022.0, 4.0) # 気圧 点線
 levels_preb = np.arange(900.0, 1080.0,20.0) # 気圧 太線 数字
@@ -600,7 +553,6 @@ dss['10u'] = dss['10u'].metpy.convert_units('knots')
 dss['10v'] = dss['10v'].metpy.convert_units('knots')
 dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
 
-#
 ## 図法指定                                                                             
 proj = ccrs.Stereographic(central_latitude=60, central_longitude=set_central_longitude)
 latlon_proj = ccrs.PlateCarree()
@@ -611,133 +563,62 @@ plt.subplots_adjust(left=0, right=1, bottom=0.06, top=0.98)
 ## 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent(i_area, latlon_proj)
-#
 ## 図に関する設定                                                                
 plt.rcParams["contour.negative_linestyle"] = 'dashed'  # 'solid' or dashed
-# 
 ## 海岸線                                                                                                                               
 ax.coastlines(resolution='10m', linewidth=1.6) # 海岸線の解像度を上げる  
 if (flag_border):
     ax.add_feature(states_provinces, edgecolor='black', linewidth=0.5)
     ax.add_feature(country_borders, edgecolor='black', linewidth=0.5)
-#
 ## グリッド線を引く                                                               
 xticks=np.arange(0,360.1,dlon)
 yticks=np.arange(-90,90.1,dlat)
-gl = ax.gridlines(crs=ccrs.PlateCarree()
-         , draw_labels=False
-         , linewidth=1, alpha=0.8)
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
 gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
-#
 # キャプションテキスト
 caption_text=""
 # 客観前線
 ax.contourf(ds4['lon'], ds4['lat'], ept, boundsTFP, cmap=cmapTFP, norm=normTFP, transform=latlon_proj) # 陰影を描く
 
-
 ## 湿数
 if flg_TTd :
     caption_text = " T-Td"
-    ttd_hatchf = ax.contourf(dss['lon'], dss['lat'],dss['2ttd'], 
-                             level_ttd, colors=cmap_ttd,
-                             extend='max', alpha=0.15, transform=latlon_proj)
+    ttd_hatchf = ax.contourf(dss['lon'], dss['lat'],dss['2ttd'], level_ttd, colors=cmap_ttd, extend='max', alpha=0.15, transform=latlon_proj)
     # colorbarの位置と大きさ指定                                                     
     #  add_axes([左端の距離, 下端からの距離, 横幅, 縦幅])                            
     #ax_reld = fig.add_axes([0.1, 0.0, 0.8, 0.02])  # 図の下
     ax_ttd = fig.add_axes([0.1, 0.1, 0.8, 0.02])  # 図の中
-    cb_ttd = fig.colorbar(ttd_hatchf, orientation='horizontal', shrink=0.74,
-                           aspect=40, pad=0.01, cax=ax_ttd)
-#
-## シアーパラメーター
-if flg_Sp :
-    caption_text = caption_text + " SP"
-    sp_hatchf = ax.contourf(dss['lon'], dss['lat'],dss['shar_para'].values * 100000.0, 
-                            level_sp, colors=cmap_sp,
-                            extend='max', alpha=0.15, transform=latlon_proj)
-    # colorbarの位置と大きさ指定                                                     
-    ax_sp = fig.add_axes([0.1, 0.1, 0.8, 0.02])  # 図の中
-    cb_sp = fig.colorbar(sp_hatchf, orientation='horizontal', shrink=0.74,
-                         aspect=40, pad=0.01, cax=ax_sp)
-    cb_sp.set_label('shear parameter. (*10$^{5}$ s$^{-1}$)')
-#
+    cb_ttd = fig.colorbar(ttd_hatchf, orientation='horizontal', shrink=0.74, aspect=40, pad=0.01, cax=ax_ttd)
+
 # 等温度線 実線
 if flg_tmp:
     caption_text = caption_text + " Tmp" 
-    cn_tmp0 = ax.contour(dss['lon'], dss['lat'], dss['2t'],
-                         colors='green', alpha=0.5, linewidths=1.0, levels=levels_tmp0,
-                         transform=latlon_proj)
-    ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=1,
-              fmt='%i', rightside_up=True)
-#
-## 温位 pot_temp
-if flg_pt :
-    caption_text = caption_text + " PT"
-    cn_pt   = ax.contour(dss['lon'], dss['lat'],dss['pt'],
-                         levels_pt, colors='orange', alpha=0.5,
-                         linewidths=1.0, linestyles='solid', transform=latlon_proj)
-    cn_ptb  = ax.contour(dss['lon'], dss['lat'],dss['pt'],
-                         levels_ptb, colors='orange', alpha=0.5,
-                         linewidths=1.5, linestyles='solid', transform=latlon_proj)
-    ax.clabel(cn_pt, cn_pt.levels, fontsize=8, inline=True, inline_spacing=1,
-              fmt='%i', rightside_up=True)
-    ax.clabel(cn_ptb, cn_ptb.levels, fontsize=8, inline=True, inline_spacing=1,
-              fmt='%i', rightside_up=True)
-#
-## 相当温位
-if flg_ept :
-    caption_text = caption_text + " EPT" 
-    cn_ept  = ax.contour(dss['lon'], dss['lat'], dss['ept'], 
-                         levels_ept,  colors='red', alpha=0.5,
-                         linewidths=0.6, linestyles='solid', transform=latlon_proj)
-    cn_eptb = ax.contour(dss['lon'], dss['lat'], dss['ept'],
-                         levels_eptb, colors='red', alpha=0.5,
-                         linewidths=1.0, linestyles='solid', transform=latlon_proj)
-    ax.clabel(cn_ept, cn_ept.levels, fontsize=8, inline=True, inline_spacing=1,
-              fmt='%i', rightside_up=True)
-    ax.clabel(cn_eptb, cn_eptb.levels, fontsize=10, inline=True, inline_spacing=1,
-              fmt='%i', rightside_up=True)
-#                                                                                 
+    cn_tmp0 = ax.contour(dss['lon'], dss['lat'], dss['2t'], colors='green', alpha=0.5, linewidths=1.0, levels=levels_tmp0, transform=latlon_proj)
+    ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
+                                                                                
 ## 等圧線
 if flg_spl :
     caption_text = caption_text + " Pres(hPa)" 
-    cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, 
-                         colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
-    #cn_preh = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preh,
-    #                     colors='black', linewidths=1.0, linestyles='dashed', transform=latlon_proj)
-    cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb,
-                         colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
+    cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
+    #cn_preh = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preh, colors='black', linewidths=1.0, linestyles='dashed', transform=latlon_proj)
+    cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
     ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
 contour_tfp = ax.contour(ds4['lon'], ds4['lat'], autofront, levels=[0], colors='green', linewidths=2.0, linestyles='solid', transform=latlon_proj) 
-    
-    
-    
-    
-    
 
 #! 表示する気圧面
 disp_pl = 850.0    
 # preT hPa面 等温度線
 ds4['tmp'] = (ds4['tmp']).metpy.convert_units(units.degC)  # Kelvin => Celsius
-cn_tmp = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl),
-                    colors='red', linewidths=1.0, linestyles='solid',
-                    levels=levels_tmp, transform=latlon_proj )
-ax.clabel(cn_tmp, cn_tmp.levels, fontsize=12,
-          inline=True, inline_spacing=5, colors='red',
-          fmt='%i', rightside_up=True)
-cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl),
-                     colors='red', linewidths=2.0, linestyles='solid', 
-                     levels=levels_tmp1, transform=latlon_proj )
-ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12,
-          inline=True, inline_spacing=5,
-          fmt='%i', rightside_up=True, colors='red')
-#                                                                                 
+cn_tmp = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=1.0, linestyles='solid', levels=levels_tmp, transform=latlon_proj)
+ax.clabel(cn_tmp, cn_tmp.levels, fontsize=12, inline=True, inline_spacing=5, colors='red', fmt='%i', rightside_up=True)
+cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=2.0, linestyles='solid', levels=levels_tmp1, transform=latlon_proj)
+ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
+                                                                                 
 ## 矢羽:データを間引いて描画
 wind_slice2 = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
-ax.barbs(dss['lon'][wind_slice2[0]],     dss['lat'][wind_slice2[1]], 
-         dss['10u'].values[wind_slice2], dss['10v'].values[wind_slice2],
-         length=wind_length, pivot='middle', color='black', transform=latlon_proj)
+ax.barbs(dss['lon'][wind_slice2[0]],     dss['lat'][wind_slice2[1]], dss['10u'].values[wind_slice2], dss['10v'].values[wind_slice2], length=wind_length, pivot='middle', color='black', transform=latlon_proj)
 
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
@@ -752,9 +633,7 @@ for i in range(len(maxid[0])):
     ax.text(wlon - 0.5, wlat + 0.5, 'H', size=16, color="blue", transform=latlon_proj)
     val = dss['prmsl'].values[maxid[0][i]][maxid[1][i]]
     ival = int(val)
-    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue",
-            transform=ax.transAxes,
-            verticalalignment="top", horizontalalignment="center")
+    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
 #minid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0, flag=1)
@@ -769,46 +648,19 @@ for i in range(len(minid[0])):
     ax.text(wlon - 0.5, wlat + 0.5, 'L', size=16, color="red", transform=latlon_proj)
     val = dss['prmsl'].values[minid[0][i]][minid[1][i]]
     ival = int(val)
-    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red",
-            transform=ax.transAxes,
-            verticalalignment="top", horizontalalignment="center")
-#
+    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+
 ## Title   
-#fig.text(0.5,0.01,"JRA3Q " + dt_str + caption_text,ha='center',va='bottom', size=18)
 fig.text(0.5,0.01,"JRA3Q " + dt_str + " Psea,T850",ha='center',va='bottom', size=18)
-#
+
 ## Output
 output_fig_nm="{}Z_surf.jpg".format(dt.strftime("%Y%m%d%H"))
 plt.savefig(output_fig_nm, format="jpg")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##  500hPa高度・渦度天気図
-
 #! 表示する気圧面
 disp_pl = 500.0
-#
+
 #! 等値線の間隔を指定
 levels_ht =np.arange(4800, 36000,  60)  # 高度を60m間隔で実線                       
 levels_ht2=np.arange(4800, 36000, 300)  # 高度を300m間隔で太線
@@ -816,15 +668,13 @@ levels_vr =np.arange(-0.0002, 0.0002, 0.00004)  # 渦度4e-5毎に等値線
 ##! 気温　等値線
 levels_tmp =np.arange(-60,342,3)
 levels_tmp1  =np.arange(-60, 42, 15) # 等値線 太線  
-#
 #! 渦度のハッチの指定
 #levels_h_vr = [0.0, 0.00008, 1.0]    # 0.0以上で 灰色(0.9), 8e-5以上で赤
 #colors_h_vr = ['0.9','red']
 #alpha_h_vr = 0.3                     # 透過率を指定
-#
 #! 緯度・経度線の指定
 dlon,dlat=10,10   # 10度ごとに
-#
+
 ## タイトル文字列用
 # 初期時刻の文字列
 dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
@@ -838,62 +688,31 @@ plt.subplots_adjust(left=0, right=1, bottom=0.06, top=0.98)
 ## 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent(i_area, latlon_proj)
-#
-# 500hPa 相対渦度のハッチ 0.0以上:着色  0.8*10**-4以上:赤                                  
-#cn_relv_hatch2 = ax.contourf(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl),
-#        levels_h_vr, colors=colors_h_vr,
-#        alpha=alpha_h_vr, transform=latlon_proj)
-# 5000hPa 相対渦度 実線 0.00004毎 負は破線                                                 
-#cn_relv = ax.contour(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl),
-#        levels_vr, colors='black', linewidths=1.0, transform=latlon_proj)
         
-        
-# vorを描く(塗り)
-ax.contourf(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl), boundsVOR, cmap=cmapVOR, norm=normVOR, vmin=vminVOR, vmax=vmaxVOR, transform=latlon_proj) # 陰影を描く
+# vorを描く(陰影を描く)
+ax.contourf(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl), boundsVOR, cmap=cmapVOR, norm=normVOR, vmin=vminVOR, vmax=vmaxVOR, transform=latlon_proj) 
     
 # vorを書く(線)  
 clevs = np.arange(0, 0.0002, 0.00004)
-cs = ax.contour(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl), clevs, linewidths=0.4, linestyles='dashed', colors='#cd6600', transform=latlon_proj)
-############################ cs.clabel(fontsize=6, fmt="%d")
-#clevs = np.arange(0, 0.0002, 0.0002)
-#cs = ax.contour(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl), clevs, linewidths=0.4, colors='#cd6600', transform=latlon_proj)
-#cs.clabel(fontsize=6, fmt="%d")        
-        
+cs = ax.contour(ds4['lon'], ds4['lat'], ds4['relv'].sel(level=disp_pl), clevs, linewidths=0.4, linestyles='dashed', colors='#cd6600', transform=latlon_proj)    
         
 # 500hPa  等高度線 実線 step1:60m毎                                                                                                          
-cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=disp_pl),
-                    colors='black',
-                    linewidths=2.0, levels=levels_ht, transform=latlon_proj )
-ax.clabel(cn_hgt, levels_ht, fontsize=15, inline=True, inline_spacing=5,
-          fmt='%i', rightside_up=True)
+cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=disp_pl), colors='black', linewidths=2.0, levels=levels_ht, transform=latlon_proj)
+ax.clabel(cn_hgt, levels_ht, fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
 # 500hPa 等高度線 太線 step1:300m毎                                                        
-cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=disp_pl),
-                    colors='black',
-                    linewidths=3.0, levels=levels_ht2, transform=latlon_proj)
-ax.clabel(cn_hgt2, fontsize=15, inline=True, inline_spacing=0,
-          fmt='%i', rightside_up=True)
+cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=disp_pl), colors='black', linewidths=3.0, levels=levels_ht2, transform=latlon_proj)
+ax.clabel(cn_hgt2, fontsize=15, inline=True, inline_spacing=0, fmt='%i', rightside_up=True)
           
 # preT hPa面 等温度線
 ds4['tmp'] = (ds4['tmp']).metpy.convert_units(units.degC)  # Kelvin => Celsius
-cn_tmp = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl),
-                    colors='red', linewidths=1.0, linestyles='solid',
-                    levels=levels_tmp, transform=latlon_proj )
-ax.clabel(cn_tmp, cn_tmp.levels, fontsize=12,
-          inline=True, inline_spacing=5, colors='red',
-          fmt='%i', rightside_up=True)
-cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl),
-                     colors='red', linewidths=2.0, linestyles='solid', 
-                     levels=levels_tmp1, transform=latlon_proj )
-ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12,
-          inline=True, inline_spacing=5,
-          fmt='%i', rightside_up=True, colors='red')
+cn_tmp = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=1.0, linestyles='solid', levels=levels_tmp, transform=latlon_proj)
+ax.clabel(cn_tmp, cn_tmp.levels, fontsize=12, inline=True, inline_spacing=5, colors='red', fmt='%i', rightside_up=True)
+cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=2.0, linestyles='solid', levels=levels_tmp1, transform=latlon_proj)
+ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
 
 ## 矢羽:データを間引いて描画
 wind_slice = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
-ax.barbs(ds4['lon'][wind_slice[0]], ds4['lat'][wind_slice[1]],    
-         ds4['ugrd'].sel(level=disp_pl).values[wind_slice],
-         ds4['vgrd'].sel(level=disp_pl).values[wind_slice],
-         length=wind_length, pivot='middle', color='black', transform=latlon_proj)
+ax.barbs(ds4['lon'][wind_slice[0]], ds4['lat'][wind_slice[1]], ds4['ugrd'].sel(level=disp_pl).values[wind_slice], ds4['vgrd'].sel(level=disp_pl).values[wind_slice], length=wind_length, pivot='middle', color='black', transform=latlon_proj)
          
 ## H stamp                                                                                                 
 maxid = detect_peaks(ds4['hgt'].sel(level=disp_pl).values, filter_size=10, dist_cut=8.0)
@@ -903,8 +722,8 @@ for i in range(len(maxid[0])):
   # 図の範囲内に座標があるか確認                                                                           
   fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
   if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-    ax.text(wlon, wlat, 'H', size=24, color="blue",
-            ha='center', va='center', transform=latlon_proj)
+    ax.text(wlon, wlat, 'H', size=24, color="blue", ha='center', va='center', transform=latlon_proj)
+
 ## L stamp                                                                                                 
 minid = detect_peaks(ds4['hgt'].sel(level=disp_pl).values, filter_size=10, dist_cut=8.0,flag=1)
 for i in range(len(minid[0])):
@@ -913,8 +732,7 @@ for i in range(len(minid[0])):
   # 図の範囲内に座標があるか確認                                                                           
   fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
   if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-    ax.text(wlon, wlat, 'L', size=24, color="red",
-            ha='center', va='center', transform=latlon_proj)
+    ax.text(wlon, wlat, 'L', size=24, color="red", ha='center', va='center', transform=latlon_proj)
 
 ## 海岸線                                                                                                                               
 ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
@@ -925,9 +743,7 @@ if (flag_border):
 ## グリッド                                                                   
 xticks=np.arange(0,360.1,dlon)
 yticks=np.arange(-90,90.1,dlat)
-gl = ax.gridlines(crs=ccrs.PlateCarree()
-         , draw_labels=False
-         , linewidth=1, alpha=0.8)
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
 gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
                                                                                         
