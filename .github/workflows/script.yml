@@ -36,7 +36,12 @@ jobs:
           folder_name=$(basename $folder)
           python JRA3Q.py ${folder_name}00
         done
-        
+    
+    - name: Check for Git changes
+      id: git_changes
+      run: |
+        git diff --quiet || echo "::set-output name=changes::yes"        
+    
     - name: Commit and Push Changes
       run: |
         echo ${{ secrets.TOKEN }}
