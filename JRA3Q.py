@@ -335,7 +335,7 @@ grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 mgntd_grad_fg = np.sqrt(grad_fg[0]**2 + grad_fg[1]**2)
 
 # TFPの極大を抽出する
-#autofront = np.zeros_like(ept)
+autofront = np.zeros_like(ept)
 for i in range(ept.shape[0]):
     for j in range(ept.shape[1]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
