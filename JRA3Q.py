@@ -140,19 +140,8 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
-## 算出
-# 相当温位
-dss['ept'] = mpcalc.equivalent_potential_temperature(dss['sp'],dss['2t'],dss['2t']-dss['2ttd'])
-# 相対渦度
-dss['vort'] = mpcalc.vorticity(dss['10u'],dss['10v'])
-# 発散
-dss['conv'] = mpcalc.divergence(dss['10u'],dss['10v'])
-# シアーパラメーター
-dss['shar_para'] = dss['vort'] - dss['conv']
-
-# ガウシアンフィルタを適用
-smoothed_msl = gaussian_filter(dss['prmsl'].values, sigma=1.0)
-dss['prmsl'] = (["lat", "lon"], smoothed_msl * units(elem_units[3]))
+# 海面気圧
+dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
 
 ##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
@@ -237,31 +226,24 @@ ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
-# 相当温位の計算
-ds4['ttd'] = ds4['tmp'] - ds4['depr']
-ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'],ds4['tmp'],ds4['ttd'])
-
+# 相当温位
+ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'], ds4['tmp'], ds4['tmp'] - ds4['depr'])
 # 相対渦度
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
-
-# ガウシアンフィルタを適用
-smoothed_hgt = gaussian_filter(ds4['hgt'].values, sigma=1.0)
-smoothed_tmp = gaussian_filter(ds4['tmp'].values, sigma=1.0)
-
-# ガウシアンフィルタを適用したデータを元のデータセットに代入
-ds4['hgt'] = (["level", "lat", "lon"], smoothed_hgt * units(elem_units[1]))
-ds4['tmp'] = (["level", "lat", "lon"], smoothed_tmp * units(elem_units[3]))
 
 # 前線客観解析
 ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=925))/3.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=1.0)
+ept = gaussian_filter(ept, sigma=2.0)
 u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=1.0)
 v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=1.0)
 #u5 = gaussian_filter(ds4['ugrd'].sel(level=500), sigma=1.0)
 #v5 = gaussian_filter(ds4['vgrd'].sel(level=500), sigma=1.0)
-vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=1.0)
+vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
+
+ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
+ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
 
 # Front Genesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
