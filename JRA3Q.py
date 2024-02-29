@@ -286,7 +286,6 @@ v5 = ds4['vgrd'].sel(level=500)
 
 vort = dss['vort'].values
 
-
 # ガウシアンフィルタを適用
 sigma = 1.0  # ガウシアンフィルタの標準偏差
 ept = gaussian_filter(ept, sigma=sigma)
@@ -304,26 +303,16 @@ grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-
-lat = ds4['lat'].values
-
-# lat を使って計算
-
-
-
-
 
 # tfpを計算する
+lat = ds4['lat'].values
 #f = np.zeros_like(vort)
 #for i in range(vort.shape[0]):
 #    for j in range(vort.shape[1]):
 #        f[i, j] = vort[i, j] * mgntd_grad_ept[i, j] / math.sin(math.radians(lat[i]))
 
-
-
 # ガウシアンフィルタを適用
-#sigma = 2.0  # ガウシアンフィルタの標準偏差
+#sigma = 1.0  # ガウシアンフィルタの標準偏差
 #mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=sigma) 
 
 #NP前線ではTの勾配も勾配方向
@@ -353,7 +342,7 @@ grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 mgntd_grad_fg = np.sqrt(grad_fg[0]**2 + grad_fg[1]**2)
 
 # TFPの極大を抽出する
-autofront = np.zeros_like(ept)
+#autofront = np.zeros_like(ept)
 for i in range(ept.shape[0]):
     for j in range(ept.shape[1]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
@@ -375,19 +364,12 @@ for i in range(ept.shape[0]):
 #mgntd_grad_fg = np.sqrt(grad_fg[0]**2 + grad_fg[1]**2)
 
 # ガウシアンフィルタを適用
-sigma = 4.0  # ガウシアンフィルタの標準偏差
+sigma = 1.0  # ガウシアンフィルタの標準偏差
 autofront = gaussian_filter(autofront, sigma=sigma) 
 
-print(vort.shape)
-print(autofront.shape)
-
-fct=mgntd_grad_ept+6*fg
-#autofront[tfp < 0] = np.nan
-autofront[u5<-abs(v5)] = np.nan
-#autofront[vort < 0] = np.nan
-#autofront[fg < 0] = np.nan
-#autofront[fct < 0] = np.nan
-
+autofront[tfp < 0] = np.nan
+autofront[vort < 0] = np.nan
+autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
