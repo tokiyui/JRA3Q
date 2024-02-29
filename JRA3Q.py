@@ -15,10 +15,9 @@ import xarray as xr
 import metpy.calc as mpcalc
 from metpy.units import units
 import matplotlib.path as mpath
-from scipy.ndimage import maximum_filter, minimum_filter
+from scipy.ndimage import maximum_filter, minimum_filter, gaussian_filter
 import matplotlib as mpl
 import scipy.ndimage as ndimage
-from scipy.ndimage import gaussian_filter, median_filter
 
 file_nm_temp_s = 'anl_surf125.{0:4d}{1:02d}{2:02d}{3:02d}'
 file_nm_temp_p = 'anl_p125_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
@@ -35,7 +34,6 @@ try:
     day = int(arg_datetime[6:8])
     hour = int(arg_datetime[8:10]) 
     dt = datetime.datetime(year, month, day, hour, 0)
-    print("指定された日時は:", dt)
     
 except ValueError:
     print("日時の形式が正しくありません。正しい形式は 'yyyymmddhh' です。")
@@ -51,7 +49,7 @@ i_hourZ=dt.hour
 (latS, latN, lonW, lonE) = (-20, 80, 70, 190)
 
 ## 読み込む要素の指定
-elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] ########'tciwv',
+elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
 elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot',]
 
 ## データサイズを取得するために、GRIB2を読み込む
@@ -121,7 +119,6 @@ dss = xr.Dataset(
         elem_s_names[7]: (["lat", "lon"], vals_[7]  * units(elem_units[7])),
         elem_s_names[8]: (["lat", "lon"], vals_[8]  * units(elem_units[8])),
         elem_s_names[9]: (["lat", "lon"], vals_[9]  * units(elem_units[9])),
-        ##############################elem_s_names[10]: (["lat", "lon"], vals_[10]  * units(elem_units[10])),
     },
     coords={
         "lat": lats,
@@ -138,7 +135,6 @@ dss[elem_s_names[6]].attrs['units'] = elem_units[6]
 dss[elem_s_names[7]].attrs['units'] = elem_units[7]
 dss[elem_s_names[8]].attrs['units'] = elem_units[8]
 dss[elem_s_names[9]].attrs['units'] = elem_units[9]
-#########################dss[elem_s_names[10]].attrs['units'] = elem_units[10]
 dss['lat'].attrs['units'] = 'degrees_north'
 dss['lon'].attrs['units'] = 'degrees_east'
 
@@ -156,7 +152,7 @@ dss['shar_para'] = dss['vort'] - dss['conv']
 
 # ガウシアンフィルタを適用
 data_msl = dss[elem_s_names[4]].values
-sigma = 1.0  # ガウシアンフィルタの標準偏差
+sigma = 2.0  # ガウシアンフィルタの標準偏差
 smoothed_msl = gaussian_filter(data_msl, sigma=sigma)
 dss[elem_s_names[4]] = (["lat", "lon"], smoothed_msl * units(elem_units[4]))
 
@@ -251,12 +247,9 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'],ds4['tmp'],ds4
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # ガウシアンフィルタを適用
-data_hgt = ds4['hgt'].values  
-data_tmp = ds4['tmp'].values
-sigma = 1.0  # ガウシアンフィルタの標準偏差
-
-smoothed_hgt = gaussian_filter(data_hgt, sigma=sigma)
-smoothed_tmp = gaussian_filter(data_tmp, sigma=sigma)
+sigma = 2.0  # ガウシアンフィルタの標準偏差
+smoothed_hgt = gaussian_filter(ds4['hgt'].values, sigma=sigma)
+smoothed_tmp = gaussian_filter(ds4['tmp'].values, sigma=sigma)
 
 # ガウシアンフィルタを適用したデータを元のデータセットに代入
 ds4['hgt'] = (["level", "lat", "lon"], smoothed_hgt * units(elem_units[1]))
@@ -276,7 +269,7 @@ v5 = ds4['vgrd'].sel(level=500)
 vort = dss['vort'].values
 
 # ガウシアンフィルタを適用
-sigma = 1.0  # ガウシアンフィルタの標準偏差
+sigma = 2.0  # ガウシアンフィルタの標準偏差
 ept = gaussian_filter(ept, sigma=sigma)
 u = gaussian_filter(u, sigma=sigma)
 v = gaussian_filter(v, sigma=sigma)
