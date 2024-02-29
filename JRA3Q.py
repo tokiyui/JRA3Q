@@ -262,7 +262,7 @@ lat = ds4['lat'].values
 #        f[i, j] = vort[i, j] * mgntd_grad_ept[i, j] / math.sin(math.radians(lat[i]))
 
 # ガウシアンフィルタを適用
-#mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=1.0) 
+mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=2.0) 
 
 # LOCATEFUNCTIONの水平傾度を計算する
 grad_mgntd_grad_ept = np.array(mpcalc.gradient(mgntd_grad_ept, deltas=(dy, dx)))
@@ -291,7 +291,7 @@ for i in range(ept.shape[0]):
 autofront = gaussian_filter(autofront, sigma=1.0) 
 
 #autofront[tfp < 0] = np.nan
-autofront[vort < 0] = np.nan
+#autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
