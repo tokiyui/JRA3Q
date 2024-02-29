@@ -236,8 +236,8 @@ ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=2.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=1.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=1.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
 #u5 = gaussian_filter(ds4['ugrd'].sel(level=500), sigma=1.0)
 #v5 = gaussian_filter(ds4['vgrd'].sel(level=500), sigma=1.0)
 vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
@@ -274,8 +274,8 @@ for i in range(ept.shape[0]):
         tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
 
 # ガウシアンフィルタを適用
-fg = gaussian_filter(fg, sigma=1.0) 
-tfp = gaussian_filter(fg, sigma=1.0) 
+fg = gaussian_filter(fg, sigma=2.0) 
+tfp = gaussian_filter(fg, sigma=2.0) 
 
 # 水平傾度を計算する
 grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
