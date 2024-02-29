@@ -104,10 +104,19 @@ all_e_size = len(all_elem_names)
 e_size = len(elem_s_names)
 elem_names = []
 elem_units = []
+
+### エラーを吐いたので以下4行を差し替え
+#for el in elem_s_names:
+#    n_ = all_elem_s_names.index(el)
+#    elem_names.append(all_elem_names[n_])
+#    elem_units.append(all_elem_units[n_])
 for el in elem_s_names:
-    n_ = all_elem_s_names.index(el)
-    elem_names.append(all_elem_names[n_])
-    elem_units.append(all_elem_units[n_])
+    if el in all_elem_s_names:
+        n_ = all_elem_s_names.index(el)
+        elem_names.append(all_elem_names[n_])
+        elem_units.append(all_elem_units[n_])
+    else:
+        print(f"要素 '{el}' はリスト内に存在しません。")
 
 ## 空間のデータサイズを取得
 vals_, lats_, lons_ = grbs[1].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
