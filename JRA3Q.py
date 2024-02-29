@@ -296,10 +296,10 @@ lat = ds4['lat'].values
 grad_mgntd_grad_ept = np.array(mpcalc.gradient(mgntd_grad_ept, deltas=(dy, dx)))
 
 # tfpを計算する
-#tfp = np.zeros_like(ept)
-#for i in range(ept.shape[0]):
-#    for j in range(ept.shape[1]):
-#        tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
+tfp = np.zeros_like(ept)
+for i in range(ept.shape[0]):
+    for j in range(ept.shape[1]):
+        tfp[i, j] = -np.dot(grad_mgntd_grad_ept[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j]) * 10000000000
 
 # ガウシアンフィルタを適用
 fg = gaussian_filter(fg, sigma=1.0) 
