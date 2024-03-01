@@ -50,7 +50,7 @@ i_hourZ=dt.hour
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
-elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot',]
+elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot']
 
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
@@ -394,7 +394,7 @@ for i in range(len(minid[0])):
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 500hPa 等高度線                                                                                                      
-ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(5100, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both')
+ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4800, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both')
                                      
 ## Title                                                                       
 fig.text(0.5, 0.01, dt_str, ha='center', va='bottom', size=18)
