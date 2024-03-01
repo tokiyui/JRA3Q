@@ -263,7 +263,7 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=2.0) 
+autofront = gaussian_filter(autofront, sigma=3.0) 
 
 #autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
