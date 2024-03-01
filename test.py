@@ -23,7 +23,7 @@ file_nm_temp_s = 'anl_surf125.{0:4d}{1:02d}{2:02d}{3:02d}'
 file_nm_temp_p = 'anl_p125_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
 folder_nm_temp = './Data/{0:4d}{1:02d}{2:02d}/'
 
-##! 読み込み期間の最初の時刻（UTC）,読み込む時刻の数、時間間隔の指定
+## 読み込み期間の最初の時刻（UTC）,読み込む時刻の数、時間間隔の指定
 # コマンドライン引数から日時を取得
 arg_datetime = sys.argv[1]
 
@@ -45,7 +45,7 @@ i_month=dt.month
 i_day=dt.day
 i_hourZ=dt.hour
 
-##! 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
+## 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
 (latS, latN, lonW, lonE) = (-20, 80, 70, 190)
 
 ## 読み込む要素の指定
@@ -140,11 +140,8 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
-# 海面気圧
-dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
-
-##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
-tagLp = 300
+## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
+tagLp = 500
 
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
@@ -226,6 +223,7 @@ ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
+dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1.0) * units(elem_units[3]))
 
@@ -328,29 +326,12 @@ def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
     peaks_index=(np.array(newx),np.array(newy))
     return peaks_index
 
-### 天気図作図のための指定
-# 基準の経度などのデフォルト
-set_central_longitude=140
-flag_border=False
-
-##! 地図の描画範囲を指定
-# 0:極東、1:ASAS領域
-n_area=0
-if n_area == 1:
-    i_area = [105,180,0,65]   #ASAS                                                                        
-else:
-    i_area = [108,156,17,55]  #FEAX 極東                                                                   
-
+## 地図の描画範囲を指定
+i_area = [108,156,17,55]                                                                
 # 緯線・経線の指定
 dlon,dlat=10,10   # 10度ごとに
-
-## タイトル文字列用
-# 初期時刻の文字列
-dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
-
-### 描画の指定
-##! 図のSIZE指定inch 
-fig_size = (10,8)
+## タイトル文字列
+dt_str = (dt.strftime("%Y/%m/%d/%HZ")).upper()
 
 ## 単位の変更
 dss['2t']  = dss['2t'].metpy.convert_units(units.degC)
@@ -359,10 +340,10 @@ dss['10v'] = dss['10v'].metpy.convert_units('knots')
 dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
 
 ## 図法指定                                                                             
-proj = ccrs.Stereographic(central_latitude=60, central_longitude=set_central_longitude)
+proj = ccrs.Stereographic(central_latitude=60, central_longitude=140)
 latlon_proj = ccrs.PlateCarree()
 ## 図のSIZE指定inch                                                                        
-fig = plt.figure(figsize= fig_size)   
+fig = plt.figure(figsize = (10,8))   
 ## 余白設定                                                                                
 plt.subplots_adjust(left=0, right=1, bottom=0.06, top=0.98)                  
 ## 作図                                                                                    
@@ -384,33 +365,33 @@ ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt
 
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
-maxid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0)
+maxid = detect_peaks(dss['prmsl'].values, filter_size=4, dist_cut=2.0)
 for i in range(len(maxid[0])):
   wlon = dss['lon'][maxid[1][i]]
   wlat = dss['lat'][maxid[0][i]]
   # 図の範囲内に座標があるか確認                                                                           
   fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
-  if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-    ax.plot(wlon, wlat, marker='x' , markersize=4, color="blue",transform=latlon_proj)
-    ax.text(wlon - 0.5, wlat + 0.5, 'H', size=16, color="blue", transform=latlon_proj)
+  if (fig_z[0] > 0 and fig_z[0] < 1 and fig_z[1] > 0 and fig_z[1] < 1):
+    ax.plot(wlon, wlat, marker='x' , markersize=10, color="blue",transform=latlon_proj)
+    ax.text(wlon - 0.5, wlat + 0.5, 'H', size=40, color="blue", transform=latlon_proj)
     val = dss['prmsl'].values[maxid[0][i]][maxid[1][i]]
     ival = int(val)
-    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 ## L stamp
 #minid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0, flag=1)
-minid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0, flag=1)
+minid = detect_peaks(dss['prmsl'].values, filter_size=4, dist_cut=2.0, flag=1)
 for i in range(len(minid[0])):
   wlon = dss['lon'][minid[1][i]]
   wlat = dss['lat'][minid[0][i]]
   # 図の範囲内に座標があるか確認                                                                           
   fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
-  if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
-    ax.plot(wlon, wlat, marker='x' , markersize=4, color="red",transform=latlon_proj)
-    ax.text(wlon - 0.5, wlat + 0.5, 'L', size=16, color="red", transform=latlon_proj)
+  if (fig_z[0] > 0 and fig_z[0] < 1 and fig_z[1] > 0 and fig_z[1] < 1):
+    ax.plot(wlon, wlat, marker='x' , markersize=10, color="red",transform=latlon_proj)
+    ax.text(wlon - 0.5, wlat + 0.5, 'L', size=40, color="red", transform=latlon_proj)
     val = dss['prmsl'].values[minid[0][i]][minid[1][i]]
     ival = int(val)
-    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
+    ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 500hPa 等高度線 実線 step1:60m毎                                                                                                          
 #cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), colors='red', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
@@ -422,7 +403,7 @@ for i in range(len(minid[0])):
 ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(5100, 6000, 60), cmap='turbo', transform=latlon_proj)
                                      
 ## Title                                                                       
-fig.text(0.5,0.01,"JRA3Q " + dt_str + " Z500,VORT",ha='center',va='bottom', size=18)
+fig.text(0.5, 0.01, dt_str, ha='center', va='bottom', size=18)
 ## Output
 output_fig_nm="{}.png".format(dt.strftime("%Y%m%d%H"))
 plt.savefig(output_fig_nm, format="png")
