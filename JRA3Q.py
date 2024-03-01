@@ -235,7 +235,7 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=925))/3.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=1.0)
+ept = gaussian_filter(ept, sigma=2.0)
 u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
 v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
 #u5 = gaussian_filter(ds4['ugrd'].sel(level=500), sigma=1.0)
@@ -376,15 +376,6 @@ boundsVOR = [0,0.00004,0.00008,0.00012,0.00016,0.00020,0.00024]
 normVOR = mpl.colors.BoundaryNorm(boundsVOR, cmapVOR.N)
 vminVOR, vmaxVOR = min(boundsVOR), max(boundsVOR)
 
-# TFP
-cmapTFP = mpl.colors.ListedColormap(['greenyellow', 'yellow', 'gold', 'orange', 'red'])
-#cmapTFP = mpl.colors.ListedColormap(['orange'])
-cmapTFP.set_over('red')
-cmapTFP.set_under('white')
-boundsTFP = [273,282,291,300,309,318]
-#boundsTFP = [0.0, 100]
-normTFP = mpl.colors.BoundaryNorm(boundsTFP, cmapTFP.N)
-
 ### 天気図作図のための指定
 # 基準の経度などのデフォルト
 set_central_longitude=140
@@ -452,9 +443,6 @@ yticks=np.arange(-90,90.1,dlat)
 gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
 gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
-
-# 客観前線
-ax.contourf(ds4['lon'], ds4['lat'], ept, boundsTFP, cmap=cmapTFP, norm=normTFP, transform=latlon_proj) # 陰影を描く
 
 ## 等圧線
 caption_text = " Pres(hPa)" 
