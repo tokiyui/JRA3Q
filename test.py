@@ -403,8 +403,6 @@ cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='b
 cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
 ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
-contour_tfp = ax.contour(ds4['lon'], ds4['lat'], autofront, levels=[0], colors='green', linewidths=2.0, linestyles='solid', transform=latlon_proj) 
-
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
 maxid = detect_peaks(dss['prmsl'].values, filter_size=8, dist_cut=4.0)
