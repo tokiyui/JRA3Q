@@ -380,7 +380,7 @@ cmapTFP = mpl.colors.ListedColormap(['greenyellow', 'yellow', 'gold', 'orange', 
 #cmapTFP = mpl.colors.ListedColormap(['orange'])
 cmapTFP.set_over('red')
 cmapTFP.set_under('white')
-boundsTFP = [327,336,345,348,351,354]
+boundsTFP = [273,282,291,300,309,318]
 #boundsTFP = [0.0, 100]
 normTFP = mpl.colors.BoundaryNorm(boundsTFP, cmapTFP.N)
 
