@@ -390,10 +390,6 @@ for i in range(len(minid[0])):
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
-# 500hPa 等高度線 実線 step1:60m毎                                                                                                          
-cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), colors='red', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
-ax.clabel(cn_hgt, np.arange(4800, 6600, 60), fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
-
 # 500hPa 等高度線                                                                                                      
 ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4800, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both')
                                      
