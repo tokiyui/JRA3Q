@@ -334,10 +334,7 @@ dlon,dlat=10,10   # 10度ごとに
 dt_str = (dt.strftime("%Y/%m/%d/%HZ")).upper()
 
 ## 単位の変更
-#dss['2t']  = dss['2t'].metpy.convert_units(units.degC)
-#dss['10u'] = dss['10u'].metpy.convert_units('knots')
-#dss['10v'] = dss['10v'].metpy.convert_units('knots')
-#dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
+dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
 
 ## 図法指定                                                                             
 proj = ccrs.Stereographic(central_latitude=60, central_longitude=140)
