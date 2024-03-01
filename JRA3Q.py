@@ -235,15 +235,15 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=925))/3.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=2.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
+ept = gaussian_filter(ept, sigma=1.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=1.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=1.0)
 #u5 = gaussian_filter(ds4['ugrd'].sel(level=500), sigma=1.0)
 #v5 = gaussian_filter(ds4['vgrd'].sel(level=500), sigma=1.0)
 vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
 
-ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
-ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
+ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[1]))
+ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1.0) * units(elem_units[3]))
 
 # FrontoGenesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
@@ -253,7 +253,8 @@ mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=2.0), deltas=(dy, dx)))
+#grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=2.0), deltas=(dy, dx)))
+grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 
 # 極大を抽出する
 autofront = np.zeros_like(ept)
