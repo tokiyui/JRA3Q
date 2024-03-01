@@ -223,7 +223,7 @@ ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
-dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1.0) * units(elem_units[3]))
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1.0) * units(elem_units[3]))
 
@@ -393,14 +393,8 @@ for i in range(len(minid[0])):
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
-# 500hPa 等高度線 実線 step1:60m毎                                                                                                          
-#cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), colors='red', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
-#ax.clabel(cn_hgt, np.arange(4800, 6600, 60), fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
-# 500hPa 等高度線 太線 step1:300m毎                                                        
-#cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), colors='red', linewidths=3.0, levels=np.arange(4800, 6600, 300), linestyles='dashed', transform=latlon_proj)
-#ax.clabel(cn_hgt2, fontsize=15, inline=True, inline_spacing=0, fmt='%i', rightside_up=True)
-
-ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(5100, 6000, 60), cmap='turbo', transform=latlon_proj)
+# 500hPa 等高度線                                                                                                      
+ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(5100, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both')
                                      
 ## Title                                                                       
 fig.text(0.5, 0.01, dt_str, ha='center', va='bottom', size=18)
