@@ -236,14 +236,14 @@ ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=1.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=1.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=1.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
 #u5 = gaussian_filter(ds4['ugrd'].sel(level=500), sigma=1.0)
 #v5 = gaussian_filter(ds4['vgrd'].sel(level=500), sigma=1.0)
 vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
 
-ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[1]))
-ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1.0) * units(elem_units[3]))
+ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
+ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
 
 # FrontoGenesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
@@ -263,7 +263,7 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=3.0) 
+autofront = gaussian_filter(autofront, sigma=2.0) 
 
 #autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
