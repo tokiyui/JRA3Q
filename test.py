@@ -226,8 +226,8 @@ ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
-ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
-ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
+ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[1]))
+ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1.0) * units(elem_units[3]))
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
@@ -413,10 +413,10 @@ for i in range(len(minid[0])):
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 500hPa 等高度線 実線 step1:60m毎                                                                                                          
-cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500), colors='black', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
+cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), colors='red', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
 ax.clabel(cn_hgt, np.arange(4800, 6600, 60), fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
 # 500hPa 等高度線 太線 step1:300m毎                                                        
-cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500), colors='black', linewidths=3.0, levels=np.arange(4800, 6600, 300), linestyles='dashed', transform=latlon_proj)
+cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), colors='red', linewidths=3.0, levels=np.arange(4800, 6600, 300), linestyles='dashed', transform=latlon_proj)
 ax.clabel(cn_hgt2, fontsize=15, inline=True, inline_spacing=0, fmt='%i', rightside_up=True)
                                      
 ## Title                                                                       
