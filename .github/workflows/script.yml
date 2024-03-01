@@ -34,7 +34,7 @@ jobs:
         for folder in $folders
         do
           folder_name=$(basename $folder)
-          python JRA3Q.py ${folder_name}00
+          python test.py ${folder_name}00
         done
     
     - name: Check for Git changes
