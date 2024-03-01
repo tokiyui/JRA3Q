@@ -369,8 +369,8 @@ for i in range(len(maxid[0])):
   # 図の範囲内に座標があるか確認                                                                           
   fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
   if (fig_z[0] > 0 and fig_z[0] < 1 and fig_z[1] > 0 and fig_z[1] < 1):
-    ax.plot(wlon, wlat, marker='x' , markersize=10, color="blue",transform=latlon_proj)
-    ax.text(wlon - 0.5, wlat + 0.5, 'H', size=40, color="blue", transform=latlon_proj)
+    ax.plot(wlon, wlat, marker='x' , markersize=15, color="blue",transform=latlon_proj)
+    ax.text(wlon - 1, wlat + 1, 'H', size=30, color="blue", transform=latlon_proj)
     val = dss['prmsl'].values[maxid[0][i]][maxid[1][i]]
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
@@ -384,8 +384,8 @@ for i in range(len(minid[0])):
   # 図の範囲内に座標があるか確認                                                                           
   fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
   if (fig_z[0] > 0 and fig_z[0] < 1 and fig_z[1] > 0 and fig_z[1] < 1):
-    ax.plot(wlon, wlat, marker='x' , markersize=10, color="red",transform=latlon_proj)
-    ax.text(wlon - 0.5, wlat + 0.5, 'L', size=40, color="red", transform=latlon_proj)
+    ax.plot(wlon, wlat, marker='x' , markersize=15, color="red",transform=latlon_proj)
+    ax.text(wlon - 0.5, wlat + 0.5, 'L', size=30, color="red", transform=latlon_proj)
     val = dss['prmsl'].values[minid[0][i]][minid[1][i]]
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=30, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
