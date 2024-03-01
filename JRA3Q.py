@@ -248,7 +248,8 @@ ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=
 # FrontoGenesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
 grad_ept = np.array(mpcalc.gradient(ept, deltas=(dy, dx)))
-mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=2.0)
+#mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=2.0)
+mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
