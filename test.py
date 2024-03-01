@@ -352,20 +352,6 @@ dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
 ##! 図のSIZE指定inch 
 fig_size = (10,8)
 
-#! 矢羽の表示間隔
-wind_slice_n = 2  
-wind_length = 4.8
-
-#! 等値線の間隔を指定
-levels_tmp0  =np.arange(-60,60,3) # 気温
-levels_pre  = np.arange(900.0, 1080.0, 4.0) # 気圧
-levels_preh = np.arange(998.0, 1022.0, 4.0) # 気圧 点線
-levels_preb = np.arange(900.0, 1080.0,20.0) # 気圧 太線 数字
-
-##! 気温　等値線
-levels_tmp =np.arange(-60,342,3)
-levels_tmp1  =np.arange(-60, 42, 15) # 等値線 太線  
-
 ## 単位の変更
 dss['2t']  = dss['2t'].metpy.convert_units(units.degC)
 dss['10u'] = dss['10u'].metpy.convert_units('knots')
@@ -382,13 +368,8 @@ plt.subplots_adjust(left=0, right=1, bottom=0.06, top=0.98)
 ## 作図                                                                                    
 ax = fig.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent(i_area, latlon_proj)
-## 図に関する設定                                                                
-plt.rcParams["contour.negative_linestyle"] = 'dashed'  # 'solid' or dashed
 ## 海岸線                                                                                                                               
 ax.coastlines(resolution='10m', linewidth=1.6) # 海岸線の解像度を上げる  
-if (flag_border):
-    ax.add_feature(states_provinces, edgecolor='black', linewidth=0.5)
-    ax.add_feature(country_borders, edgecolor='black', linewidth=0.5)
 ## グリッド線を引く                                                               
 xticks=np.arange(0,360.1,dlon)
 yticks=np.arange(-90,90.1,dlat)
@@ -397,10 +378,8 @@ gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
 
 ## 等圧線
-caption_text = " Pres(hPa)" 
-cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
-#cn_preh = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preh, colors='black', linewidths=1.0, linestyles='dashed', transform=latlon_proj)
-cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
+cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], np.arange(900.0, 1080.0, 4.0), colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
+cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], np.arange(900.0, 1080.0, 20.0), colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
 ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
 ## H stamp
@@ -433,33 +412,13 @@ for i in range(len(minid[0])):
     ival = int(val)
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
-#! 表示する気圧面
-disp_pl = 500.0
-
-#! 等値線の間隔を指定
-levels_ht =np.arange(4800, 36000,  60)  # 高度を60m間隔で実線                       
-levels_ht2=np.arange(4800, 36000, 300)  # 高度を300m間隔で太線
- 
-# 500hPa  等高度線 実線 step1:60m毎                                                                                                          
-cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=disp_pl), colors='black', linewidths=2.0, levels=levels_ht, transform=latlon_proj)
+# 500hPa 等高度線 実線 step1:60m毎                                                                                                          
+cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500), colors='black', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
 ax.clabel(cn_hgt, levels_ht, fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
 # 500hPa 等高度線 太線 step1:300m毎                                                        
-cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=disp_pl), colors='black', linewidths=3.0, levels=levels_ht2, transform=latlon_proj)
+cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500), colors='black', linewidths=3.0, levels=np.arange(4800, 6600, 300), linestyles='dashed', transform=latlon_proj)
 ax.clabel(cn_hgt2, fontsize=15, inline=True, inline_spacing=0, fmt='%i', rightside_up=True)
-          
-## 海岸線                                                                                                                               
-ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
-if (flag_border):
-    ax.add_feature(states_provinces, edgecolor='black', linewidth=0.5)
-    ax.add_feature(country_borders, edgecolor='black', linewidth=0.5)
-
-## グリッド                                                                   
-xticks=np.arange(0,360.1,dlon)
-yticks=np.arange(-90,90.1,dlat)
-gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
-gl.xlocator = mticker.FixedLocator(xticks)
-gl.ylocator = mticker.FixedLocator(yticks)
-                                                                                        
+                                     
 ## Title                                                                       
 fig.text(0.5,0.01,"JRA3Q " + dt_str + " Z500,VORT",ha='center',va='bottom', size=18)
 ## Output
