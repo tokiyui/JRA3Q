@@ -414,7 +414,7 @@ for i in range(len(minid[0])):
 
 # 500hPa 等高度線 実線 step1:60m毎                                                                                                          
 cn_hgt = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500), colors='black', linewidths=2.0, levels=np.arange(4800, 6600, 60), linestyles='dashed', transform=latlon_proj)
-ax.clabel(cn_hgt, levels_ht, fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
+ax.clabel(cn_hgt, np.arange(4800, 6600, 60), fontsize=15, inline=True, inline_spacing=5, fmt='%i', rightside_up=True)
 # 500hPa 等高度線 太線 step1:300m毎                                                        
 cn_hgt2= ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500), colors='black', linewidths=3.0, levels=np.arange(4800, 6600, 300), linestyles='dashed', transform=latlon_proj)
 ax.clabel(cn_hgt2, fontsize=15, inline=True, inline_spacing=0, fmt='%i', rightside_up=True)
