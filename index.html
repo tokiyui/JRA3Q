@@ -1,62 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Viewer</title>
-<script>
-window.onload = function() {
-    // ディレクトリ内のファイルを取得してプルダウンメニューを作成する関数
-    function populateDropdown() {
-        const directoryPath = './'; // カレントディレクトリ
-        const dropdown = document.getElementById('imageSelect');
-
-        fetch(directoryPath)
-            .then(response => response.text())
-            .then(text => {
-                const parser = new DOMParser();
-                const htmlDocument = parser.parseFromString(text, 'text/html');
-                const files = Array.from(htmlDocument.querySelectorAll('a')).map(a => a.getAttribute('href'));
-
-                // 10桁の数字にマッチするファイル名をフィルタリング
-                const imageFiles = files.filter(file => /^[0-9]{10}Z_(500hPa|surf)\.jpg$/.test(file));
-
-                // プルダウンメニューを作成
-                imageFiles.forEach(file => {
-                    const option = document.createElement('option');
-                    option.text = file.substring(0, 10); // ファイル名から10桁の数字を取得
-                    dropdown.add(option);
-                });
-            })
-            .catch(error => console.error('Error fetching directory:', error));
-    }
-
-    // プルダウンが選択されたときに画像を表示する関数
-    function showImages() {
-        const selectedValue = document.getElementById('imageSelect').value;
-        const image500hPa = selectedValue + 'Z_500hPa.jpg';
-        const imageSurf = selectedValue + 'Z_surf.jpg';
-        document.getElementById('image500hPa').src = image500hPa;
-        document.getElementById('imageSurf').src = imageSurf;
-    }
-
-    populateDropdown(); // ページロード時にプルダウンメニューを作成
-};
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
 </head>
 <body>
-<h2>画像を選択してください：</h2>
-<select id="imageSelect" onchange="showImages()">
-    <!-- プルダウンメニューはfetchによって動的に生成されます -->
-</select>
-<br><br>
-<div>
-    <h3>500hPaの画像：</h3>
-    <img id="image500hPa" src="" alt="500hPaの画像">
-</div>
-<div>
-    <h3>地上の画像：</h3>
-    <img id="imageSurf" src="" alt="地上の画像">
-</div>
+    <ul>
+        <li><a href="1993080600.png">1993080600.png</a></li>
+        <li><a href="1994061500.png">1994061500.png</a></li>
+        <li><a href="1995081500.png">1995081500.png</a></li>
+        <li><a href="1995120200.png">1995120200.png</a></li>
+        <li><a href="1997042400.png">1997042400.png</a></li>
+        <li><a href="1998010900.png">1998010900.png</a></li>
+        <li><a href="1998050100.png">1998050100.png</a></li>
+        <li><a href="1998092600.png">1998092600.png</a></li>
+        <li><a href="1999040500.png">1999040500.png</a></li>
+        <li><a href="1999040800.png">1999040800.png</a></li>
+        <li><a href="1999041300.png">1999041300.png</a></li>
+        <li><a href="1999042100.png">1999042100.png</a></li>
+        <li><a href="1999050400.png">1999050400.png</a></li>
+        <li><a href="1999051200.png">1999051200.png</a></li>
+        <li><a href="1999052600.png">1999052600.png</a></li>
+        <li><a href="1999060200.png">1999060200.png</a></li>
+        <li><a href="1999062100.png">1999062100.png</a></li>
+        <li><a href="1999071200.png">1999071200.png</a></li>
+        <li><a href="1999071800.png">1999071800.png</a></li>
+        <li><a href="1999072700.png">1999072700.png</a></li>
+        <li><a href="1999082400.png">1999082400.png</a></li>
+        <li><a href="1999092000.png">1999092000.png</a></li>
+        <li><a href="1999121600.png">1999121600.png</a></li>
+        <li><a href="2000010500.png">2000010500.png</a></li>
+        <li><a href="2000030800.png">2000030800.png</a></li>
+        <li><a href="2000032200.png">2000032200.png</a></li>
+        <li><a href="2000073100.png">2000073100.png</a></li>
+        <li><a href="2001010500.png">2001010500.png</a></li>
+        <li><a href="2001022400.png">2001022400.png</a></li>
+        <li><a href="2001060600.png">2001060600.png</a></li>
+        <li><a href="2001062200.png">2001062200.png</a></li>
+        <li><a href="2001072500.png">2001072500.png</a></li>
+        <li><a href="2001081200.png">2001081200.png</a></li>
+        <li><a href="2001092800.png">2001092800.png</a></li>
+        <li><a href="2001102300.png">2001102300.png</a></li>
+        <li><a href="2002091100.png">2002091100.png</a></li>
+        <li><a href="2002122900.png">2002122900.png</a></li>
+        <li><a href="2003030500.png">2003030500.png</a></li>
+        <li><a href="2003111800.png">2003111800.png</a></li>
+        <li><a href="2004011500.png">2004011500.png</a></li>
+        <li><a href="2004060500.png">2004060500.png</a></li>
+        <li><a href="2004122000.png">2004122000.png</a></li>
+    </ul>
 </body>
 </html>
