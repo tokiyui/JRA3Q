@@ -21,7 +21,7 @@ import scipy.ndimage as ndimage
 
 file_nm_temp_s = 'anl_surf125.{0:4d}{1:02d}{2:02d}{3:02d}'
 file_nm_temp_p = 'anl_p125_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
-folder_nm_temp = './Data/{0:4d}{1:02d}{2:02d}/'
+folder_nm_temp = './data/{0:4d}{1:02d}{2:02d}/'
 
 ##! 読み込み期間の最初の時刻（UTC）,読み込む時刻の数、時間間隔の指定
 # コマンドライン引数から日時を取得
