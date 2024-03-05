@@ -139,7 +139,7 @@ dss['lat'].attrs['units'] = 'degrees_north'
 dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
-dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=3) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
@@ -339,7 +339,7 @@ ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt
 
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
-maxid = detect_peaks(dss['prmsl'].values, filter_size=4, dist_cut=2.0)
+maxid = detect_peaks(dss['prmsl'].values, filter_size=12, dist_cut=4.0)
 for i in range(len(maxid[0])):
   wlon = dss['lon'][maxid[1][i]]
   wlat = dss['lat'][maxid[0][i]]
@@ -354,7 +354,7 @@ for i in range(len(maxid[0])):
 
 ## L stamp
 #minid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0, flag=1)
-minid = detect_peaks(dss['prmsl'].values, filter_size=4, dist_cut=2.0, flag=1)
+minid = detect_peaks(dss['prmsl'].values, filter_size=12, dist_cut=4.0, flag=1)
 for i in range(len(minid[0])):
   wlon = dss['lon'][minid[1][i]]
   wlat = dss['lat'][minid[0][i]]
