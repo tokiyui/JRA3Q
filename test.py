@@ -172,8 +172,8 @@ elem_units = []
 ## 要素のループ
 folder_nm = folder_nm_temp.format(dt.year,dt.month,dt.day)
 for i_elem, elem in enumerate(elems):
-    ## pygrib open
-    file_nm = folder_nm + file_nm_temp_p.format(elem,dt.year,dt.month,dt.day,dt.hour)
+## pygrib open
+    file_nm = folder_nm + file_nm_temp_p.format('hgt',dt.year,dt.month,dt.day,dt.hour)
     #print(elem," : ",file_nm)
     grbs = pygrib.open(file_nm)
     ## 処理する高度面の選択
@@ -188,7 +188,7 @@ for i_elem, elem in enumerate(elems):
 ## Xarray Dataset 作成
 ds4 = xr.Dataset(
     {
-        elems[0]: (["level","lat", "lon"], val4_[0]  * units(elem_units[0])),
+        'hgt': (["level","lat", "lon"], val4_[0]  * units(elem_units[0])),
     },
     coords={
         "level": levels,
@@ -196,14 +196,13 @@ ds4 = xr.Dataset(
         "lon": lons,
     },
 )
-ds4[elems[0]].attrs['units'] = elem_units[0]
+ds4['hgt'].attrs['units'] = elem_units[0]
 ds4['level'].attrs['units'] = 'hPa'
 ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
-ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[1]))
-#ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1.0) * units(elem_units[3]))
+ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[0]))
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
