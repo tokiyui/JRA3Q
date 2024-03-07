@@ -46,7 +46,7 @@ i_day=dt.day
 i_hourZ=dt.hour
 
 ## 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
-(latS, latN, lonW, lonE) = (-20, 80, 70, 190)
+(latS, latN, lonW, lonE) = (0, 60, 80, 200)
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
@@ -142,12 +142,11 @@ dss = dss.metpy.parse_cf()
 
 u = gaussian_filter(dss['10u'].values, sigma=1)
 v = gaussian_filter(dss['10v'].values, sigma=1)
-w = u**2 + v**2
 
 # wが5以下の場所のみフィルタリング
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 2.5, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 5.0, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(u**2 + v**2 <= 2.5, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(u**2 + v**2 <= 5.0, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(u**2 + v**2 <= 10, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
@@ -313,7 +312,7 @@ def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
     return peaks_index
 
 ## 地図の描画範囲を指定
-i_area = [120,180,10,50]                                                              
+i_area = [120,170,10,50]                                                              
 # 緯線・経線の指定
 dlon,dlat=10,10   # 10度ごとに
 ## タイトル文字列
