@@ -140,8 +140,8 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
-u = gaussian_filter(dss['u10'].values, sigma=1)
-v = gaussian_filter(dss['v10'].values, sigma=1)
+u = gaussian_filter(dss['10u'].values, sigma=1)
+v = gaussian_filter(dss['10v'].values, sigma=1)
 w = u**2 + v**2
 
 # wが5以下の場所のみフィルタリング
