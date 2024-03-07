@@ -312,7 +312,7 @@ def detect_peaks(image, filter_size=100, dist_cut=100.0, flag=0):
     return peaks_index
 
 ## 地図の描画範囲を指定
-i_area = [120,160,15,55]                                                              
+i_area = [120,170,15,55]                                                              
 # 緯線・経線の指定
 dlon,dlat=10,10   # 10度ごとに
 ## タイトル文字列
