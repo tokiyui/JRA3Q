@@ -140,13 +140,14 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
-u = gaussian_filter(dss['10u'].values, sigma=4)
-v = gaussian_filter(dss['10v'].values, sigma=4)
+#u = gaussian_filter(dss['10u'].values, sigma=4)
+#v = gaussian_filter(dss['10v'].values, sigma=4)
+w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
 
 # wが5以下の場所のみフィルタリング
-#dss['prmsl'] = (["lat", "lon"], np.where(u**2 + v**2 <= 2.5, gaussian_filter(dss['prmsl'].values, sigma=10.0), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(u**2 + v**2 <= 5.0, gaussian_filter(dss['prmsl'].values, sigma=10.0), dss['prmsl'].values) * units(elem_units[3]))
-#dss['prmsl'] = (["lat", "lon"], np.where(u**2 + v**2 <= 10, gaussian_filter(dss['prmsl'].values, sigma=10), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 2.5, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 5.0, gaussian_filter(dss['prmsl'].values, sigma=4.0), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=0.5) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
