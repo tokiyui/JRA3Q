@@ -145,12 +145,12 @@ dss = dss.metpy.parse_cf()
 w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
 
 # wが5以下の場所のみフィルタリング
-dss['prmsls'] = (["lat", "lon"], np.where(w <= 1.5, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsls'] = (["lat", "lon"], np.where(w <= 3.0, gaussian_filter(dss['prmsls'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsls'] = (["lat", "lon"], np.where(w <= 5.0, gaussian_filter(dss['prmsls'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsls'] = (["lat", "lon"], np.where(w <= 7.5, gaussian_filter(dss['prmsls'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsls'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsls'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsls'].values, sigma=1) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 1.5, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 3.0, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 5.0, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 7.5, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmss'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
@@ -323,6 +323,7 @@ dt_str = (dt.strftime("%Y/%m/%d/%HZ")).upper()
 
 ## 単位の変更
 dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
+dss['prmsls'] = dss['prmsls'].metpy.convert_units('hPa')
 
 ## 図法指定                                                                             
 proj = ccrs.Stereographic(central_latitude=60, central_longitude=140)
