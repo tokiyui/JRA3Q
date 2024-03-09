@@ -323,7 +323,7 @@ dt_str = (dt.strftime("%Y/%m/%d/%HZ")).upper()
 
 ## 単位の変更
 dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
-dss['prmsls'] = dss['prmsls'].metpy.convert_units('hPa')
+#dss['prmsls'] = dss['prmsls'].metpy.convert_units('hPa')
 
 ## 図法指定                                                                             
 proj = ccrs.Stereographic(central_latitude=60, central_longitude=140)
