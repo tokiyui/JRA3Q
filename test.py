@@ -142,7 +142,7 @@ dss = dss.metpy.parse_cf()
 
 #u = gaussian_filter(dss['10u'].values, sigma=4)
 #v = gaussian_filter(dss['10v'].values, sigma=4)
-w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
+w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=1)
 
 # wが5以下の場所のみフィルタリング
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 1.5, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
