@@ -150,7 +150,7 @@ w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 25, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 7.5, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 100, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2) * units(elem_units[3]))
+#dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
