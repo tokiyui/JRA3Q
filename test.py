@@ -140,13 +140,11 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
-#u = gaussian_filter(dss['10u'].values, sigma=4)
-#v = gaussian_filter(dss['10v'].values, sigma=4)
-w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
+w = gaussian_filter((dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=1)
 
 # wが5以下の場所のみフィルタリング
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 6.6, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 26.5, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 6.6, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 26.5, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 59.5, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=0.5) * units(elem_units[3]))
 
@@ -211,7 +209,7 @@ ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
-ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1.0) * units(elem_units[0]))
+ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1) * units(elem_units[0]))
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
