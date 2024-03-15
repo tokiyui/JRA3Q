@@ -18,6 +18,7 @@ import matplotlib.path as mpath
 from scipy.ndimage import maximum_filter, minimum_filter, gaussian_filter
 import matplotlib as mpl
 import scipy.ndimage as ndimage
+from scipy.ndimage import bilateral_filter
 
 file_nm_temp_s = 'anl_surf.{0:4d}{1:02d}{2:02d}{3:02d}'
 file_nm_temp_p = 'anl_p_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
@@ -144,7 +145,8 @@ w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), si
 
 # wが5以下の場所のみフィルタリング
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 5, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+#dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, bilateral_filter(dss['prmsl'].values, sigma_spatial=2, sigma_range=15), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
