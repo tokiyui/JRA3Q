@@ -3,4 +3,4 @@ pygrib
 cartopy
 xarray
 metpy
-scipy
+cv2
