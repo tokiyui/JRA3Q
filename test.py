@@ -149,7 +149,7 @@ w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), si
 #dss['prmsl'] = (["lat", "lon"], cv2.bilateralFilter(dss['prmsl'].values, d=10, sigmaColor=100, sigmaSpace=100) * units(elem_units[3]))
 
 pressure_data_uint8 = ((dss['prmsl'].values - dss['prmsl'].values.min()) / (dss['prmsl'].values.max() - dss['prmsl'].values.min()) * 255).astype('uint8')
-filtered_pressure_data = cv2.bilateralFilter(pressure_data_uint8, d=150, sigmaColor=7.5, sigmaSpace=7.5)
+filtered_pressure_data = cv2.bilateralFilter(pressure_data_uint8, d=150, sigmaColor=75, sigmaSpace=7.5)
 dss['prmsl'] = (["lat", "lon"], ((filtered_pressure_data / 255) * (dss['prmsl'].values.max() - dss['prmsl'].values.min()) + dss['prmsl'].values.min()) * units(elem_units[3]))
 
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
