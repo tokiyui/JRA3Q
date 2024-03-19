@@ -145,7 +145,7 @@ w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), si
 
 # wが5以下の場所のみフィルタリング
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 5, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 #pressure_data_uint8 = ((dss['prmsl'].values - dss['prmsl'].values.min()) / (dss['prmsl'].values.max() - dss['prmsl'].values.min()) * 255).astype('uint8')
