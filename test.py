@@ -110,7 +110,6 @@ for g in grbs:
 
 ## 地表面ジオポテンシャル高度
 grbs = pygrib.open(file_nm_temp_l)
-print(grbs)
 surf = grbs[1].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)[0]
 
 ## Xarray Dataset 作成
@@ -147,10 +146,6 @@ dss['lat'].attrs['units'] = 'degrees_north'
 dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
-
-
-
-print(surf.shape,dss['prmsl'].shape)
 
 w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=2)
 
