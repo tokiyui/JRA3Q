@@ -126,7 +126,7 @@ dss = xr.Dataset(
         elem_s_names[7]: (["lat", "lon"], vals_[7]  * units(elem_units[7])),
         elem_s_names[8]: (["lat", "lon"], vals_[8]  * units(elem_units[8])),
         elem_s_names[9]: (["lat", "lon"], vals_[9]  * units(elem_units[9])),
-        #'surf': (["lat", "lon"], surf,
+        'surf': (["lat", "lon"], surf,
     },
     coords={
         "lat": lats,
@@ -156,7 +156,7 @@ w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), si
 
 # wが5以下の場所のみフィルタリング
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 5, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-#dss['prmsl'] = (["lat", "lon"], np.where(dss['surf'] <= 150000, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(dss['surf'] <= 150000, gaussian_filter(dss['prmsl'].values, sigma=10), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 #pressure_data_uint8 = ((dss['prmsl'].values - dss['prmsl'].values.min()) / (dss['prmsl'].values.max() - dss['prmsl'].values.min()) * 255).astype('uint8')
