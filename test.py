@@ -21,7 +21,8 @@ import scipy.ndimage as ndimage
 import cv2
 
 file_nm_temp_s = 'anl_surf.{0:4d}{1:02d}{2:02d}{3:02d}'
-file_nm_temp_p = 'anl_p_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
+file_nm_temp_p = 'anl_p_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'
+file_nm_temp_l = 'TL479_surf.grib2'
 folder_nm_temp = './Data/{0:4d}{1:02d}{2:02d}/'
 
 ## 読み込み期間の最初の時刻（UTC）,読み込む時刻の数、時間間隔の指定
@@ -106,6 +107,10 @@ for g in grbs:
     if g['parameterName'] in elem_names:
         i_elem = elem_names.index(g['parameterName'])
         vals_[i_elem], _, _ = g.data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
+
+## 地表面ジオポテンシャル高度
+grbs = pygrib.open(file_nm_temp_l)
+print(grbs)
 
 ## Xarray Dataset 作成
 dss = xr.Dataset(
