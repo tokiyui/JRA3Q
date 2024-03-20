@@ -148,10 +148,10 @@ dss['lon'].attrs['units'] = 'degrees_east'
 dss = dss.metpy.parse_cf()
 
 w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=2)
-
+dss['surf'] = gaussian_filter(dss['surf'], sigma=1)
 # wが5以下の場所のみフィルタリング
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 5, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(dss['surf'] >= 1500, gaussian_filter(dss['prmsl'].values, sigma=10), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(dss['surf'] >= 1500, gaussian_filter(dss['prmsl'].values, sigma=8), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 #pressure_data_uint8 = ((dss['prmsl'].values - dss['prmsl'].values.min()) / (dss['prmsl'].values.max() - dss['prmsl'].values.min()) * 255).astype('uint8')
