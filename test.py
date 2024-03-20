@@ -125,7 +125,7 @@ dss = xr.Dataset(
         elem_s_names[7]: (["lat", "lon"], vals_[7]  * units(elem_units[7])),
         elem_s_names[8]: (["lat", "lon"], vals_[8]  * units(elem_units[8])),
         elem_s_names[9]: (["lat", "lon"], vals_[9]  * units(elem_units[9])),
-        'surf': (["lat", "lon"], grbs[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)),
+        'surf': (["lat", "lon"], grbs[1].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)),
     },
     coords={
         "lat": lats,
