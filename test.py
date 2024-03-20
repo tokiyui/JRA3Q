@@ -149,7 +149,7 @@ dss = dss.metpy.parse_cf()
 
 
 
-print(grbs[1].data.shape,dss['prmsl'].shape)
+print(grbs[1].values().shape,dss['prmsl'].shape)
 
 w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=2)
 
