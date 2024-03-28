@@ -156,7 +156,7 @@ dss['prmsl'] = (["lat", "lon"], np.where(surf >= 8000, gaussian_filter(dss['prms
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
-
+dss['prmsls'] = dss['prmsl']
 #pressure_data_uint8 = ((dss['prmsl'].values - dss['prmsl'].values.min()) / (dss['prmsl'].values.max() - dss['prmsl'].values.min()) * 255).astype('uint8')
 #filtered_pressure_data = cv2.bilateralFilter(pressure_data_uint8, d=1, sigmaColor=2, sigmaSpace=2)
 #dss['prmsl'] = (["lat", "lon"], ((filtered_pressure_data / 255) * (dss['prmsl'].values.max() - dss['prmsl'].values.min()) + dss['prmsl'].values.min()) * units(elem_units[3]))
