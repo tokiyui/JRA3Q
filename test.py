@@ -358,7 +358,7 @@ gl.ylocator = mticker.FixedLocator(yticks)
 ## 等圧線
 cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsls'], np.arange(900.0, 1080.0, 4.0), colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
 cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsls'], np.arange(900.0, 1080.0, 20.0), colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
-ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
+#ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
