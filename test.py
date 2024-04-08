@@ -18,7 +18,6 @@ import matplotlib.path as mpath
 from scipy.ndimage import maximum_filter, minimum_filter, gaussian_filter
 import matplotlib as mpl
 import scipy.ndimage as ndimage
-import cv2
 
 file_nm_temp_s = 'anl_surf.{0:4d}{1:02d}{2:02d}{3:02d}'
 file_nm_temp_p = 'anl_p_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'
@@ -152,16 +151,10 @@ surf = gaussian_filter(surf, sigma=1)
 
 # wが5以下の場所のみフィルタリング
 dss['prmsl'] = (["lat", "lon"], np.where(surf >= 8000, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=0.5) * units(elem_units[3]))
 dss['prmsls'] = dss['prmsl']
-#pressure_data_uint8 = ((dss['prmsl'].values - dss['prmsl'].values.min()) / (dss['prmsl'].values.max() - dss['prmsl'].values.min()) * 255).astype('uint8')
-#filtered_pressure_data = cv2.bilateralFilter(pressure_data_uint8, d=1, sigmaColor=2, sigmaSpace=2)
-#dss['prmsl'] = (["lat", "lon"], ((filtered_pressure_data / 255) * (dss['prmsl'].values.max() - dss['prmsl'].values.min()) + dss['prmsl'].values.min()) * units(elem_units[3]))
-
-#dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
