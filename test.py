@@ -154,9 +154,9 @@ dss['prmsl'] = (["lat", "lon"], np.where(surf >= 8000, gaussian_filter(dss['prms
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 5, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 8, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 12, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
-#dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=0.5) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 12, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
+dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 dss['prmsls'] = dss['prmsl']
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
