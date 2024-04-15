@@ -156,7 +156,7 @@ dss['prmsl'] = (["lat", "lon"], np.where(surf >= 8000, gaussian_filter(dss['prms
 dss['prmsl'] = (["lat", "lon"], np.where(w <= 10, gaussian_filter(dss['prmsl'].values, sigma=2), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 12, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
-dss['prmsls'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
@@ -329,7 +329,7 @@ dt_str = (dt.strftime("%Y/%m/%d/%HZ")).upper()
 
 ## 単位の変更
 dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
-dss['prmsls'] = dss['prmsls'].metpy.convert_units('hPa')
+dss['prmsl'] = dss['prmsl'].metpy.convert_units('hPa')
 
 ## 図法指定                                                                             
 proj = ccrs.Stereographic(central_latitude=60, central_longitude=140)
@@ -351,8 +351,8 @@ gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
 
 ## 等圧線
-cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsls'], np.arange(900.0, 1080.0, 4.0), colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
-cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsls'], np.arange(900.0, 1080.0, 20.0), colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
+cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], np.arange(900.0, 1080.0, 4.0), colors='black', linewidths=2.0, linestyles='solid', transform=latlon_proj)
+cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], np.arange(900.0, 1080.0, 20.0), colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
 #ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
 ## H stamp
