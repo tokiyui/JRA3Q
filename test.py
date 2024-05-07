@@ -383,8 +383,8 @@ for i in range(len(minid[0])):
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=20, color="white", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 500hPa 等高度線                                                                                                      
-ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both')
-                                     
+ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both', alpha=0.5)
+                                    
 ## Title                                                                       
 fig.text(0.5, 0.01, dt_str, ha='center', va='bottom', size=18)
 ## Output
