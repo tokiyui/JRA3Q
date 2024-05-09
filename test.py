@@ -157,7 +157,9 @@ surf = gaussian_filter(surf, sigma=1)
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=4-np.sqrt(w)) * units(elem_units[3]))
 sigma = 4 - np.sqrt(w)
 
-print(dss['prmsl'].shape,sigma.shape)
+print("dss['prmsl'].values.shape:",dss['prmsl'].values.shape)
+print("sigma.shape:",sigma.shape)
+
 dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=sigma) * units(elem_units[3]))
 
 ## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
