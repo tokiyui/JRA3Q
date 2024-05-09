@@ -155,8 +155,8 @@ surf = gaussian_filter(surf, sigma=1)
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=4-np.sqrt(w)) * units(elem_units[3]))
-sigma = 4 - np.sqrt(w)
-
+#sigma = 4 - np.sqrt(w)
+sigma = [4 - np.sqrt(w)] * 2  # 二次元配列であることを明示
 print("dss['prmsl'].values.shape:",dss['prmsl'].values.shape)
 print("sigma.shape:",sigma.shape)
 
