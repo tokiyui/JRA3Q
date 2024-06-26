@@ -51,7 +51,7 @@ i_hourZ=dt.hour
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
-elems = ['hgt']
+elems = ['hgt', 'tmp']
 
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
@@ -205,7 +205,8 @@ for i_elem, elem in enumerate(elems):
 ## Xarray Dataset 作成
 ds4 = xr.Dataset(
     {
-        'hgt': (["level","lat", "lon"], val4_[0]  * units(elem_units[0])),
+        'hgt': (["level", "lat", "lon"], val4_[0]  * units(elem_units[0])),
+        'tmp': (["level", "lat", "lon"], val4_[1]  * units(elem_units[1])),
     },
     coords={
         "level": levels,
@@ -214,12 +215,14 @@ ds4 = xr.Dataset(
     },
 )
 ds4['hgt'].attrs['units'] = elem_units[0]
+ds4['tmp'].attrs['units'] = elem_units[1]
 ds4['level'].attrs['units'] = 'hPa'
 ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
 ds4 = ds4.metpy.parse_cf()
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=1) * units(elem_units[0]))
+ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=1) * units(elem_units[1]))
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
