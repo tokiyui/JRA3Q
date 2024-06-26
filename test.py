@@ -392,7 +392,7 @@ for i in range(len(minid[0])):
 ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both', alpha=0.5)
 
 # 850hPa 等温線
-ax.contour(ds4['lon'], ds4['lat'], ds4['tmp'].sel(level=850.0)+273.15, np.arange(-45, 45, 3), colors='magenta', linewidths=3.0, linestyles='solid', transform=latlon_proj)
+ax.contour(ds4['lon'], ds4['lat'], ds4['tmp'].sel(level=850.0), np.arange(-45, 45, 3), colors='magenta', linewidths=3.0, linestyles='solid', transform=latlon_proj)
                         
 ## Title                                                                       
 fig.text(0.5, 0.01, dt_str, ha='center', va='bottom', size=18)
