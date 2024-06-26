@@ -158,7 +158,7 @@ for i in range(1, 20):
 #dss['prmsl'] = (["lat", "lon"], np.where(w <= 15, gaussian_filter(dss['prmsl'].values, sigma=1), dss['prmsl'].values) * units(elem_units[3]))
 #dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=1) * units(elem_units[3]))
 
-## 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
+##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
 
 ## データサイズを取得するために、GRIB2を読み込む
@@ -189,8 +189,8 @@ elem_units = []
 ## 要素のループ
 folder_nm = folder_nm_temp.format(dt.year,dt.month,dt.day)
 for i_elem, elem in enumerate(elems):
-## pygrib open
-    file_nm = folder_nm + file_nm_temp_p.format('hgt',dt.year,dt.month,dt.day,dt.hour)
+    ## pygrib open
+    file_nm = folder_nm + file_nm_temp_p.format(elem,dt.year,dt.month,dt.day,dt.hour)
     #print(elem," : ",file_nm)
     grbs = pygrib.open(file_nm)
     ## 処理する高度面の選択
@@ -202,13 +202,11 @@ for i_elem, elem in enumerate(elems):
     for i_lev in range(l_size):
         val4_[i_elem][i_lev], _, _ = grb_tag[i_lev].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
-print(elem_units)
-
 ## Xarray Dataset 作成
 ds4 = xr.Dataset(
     {
-        'hgt': (["level", "lat", "lon"], val4_[0]  * units(elem_units[0])),
-        'tmp': (["level", "lat", "lon"], val4_[1]  * units(elem_units[1])),
+        elems[0]: (["level","lat", "lon"], val4_[0]  * units(elem_units[0])),
+        elems[1]: (["level","lat", "lon"], val4_[1]  * units(elem_units[1])),
     },
     coords={
         "level": levels,
@@ -216,8 +214,8 @@ ds4 = xr.Dataset(
         "lon": lons,
     },
 )
-ds4['hgt'].attrs['units'] = elem_units[0]
-ds4['tmp'].attrs['units'] = elem_units[1]
+ds4[elems[0]].attrs['units'] = elem_units[0]
+ds4[elems[1]].attrs['units'] = elem_units[1]
 ds4['level'].attrs['units'] = 'hPa'
 ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
