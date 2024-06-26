@@ -202,6 +202,8 @@ for i_elem, elem in enumerate(elems):
     for i_lev in range(l_size):
         val4_[i_elem][i_lev], _, _ = grb_tag[i_lev].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
+print(elem_units)
+
 ## Xarray Dataset 作成
 ds4 = xr.Dataset(
     {
