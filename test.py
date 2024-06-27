@@ -389,8 +389,8 @@ for i in range(len(minid[0])):
     ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=20, color="white", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
 # 500hPa 等高度線                                                                                                      
-z500 = ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both', alpha=0.5)
-ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), colors='white', linewidths=3.0, linestyles='solid', transform=latlon_proj)
+ax.contourf(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), cmap='turbo', transform=latlon_proj, extend='both', alpha=0.5)
+z500 = ax.contour(ds4['lon'], ds4['lat'], ds4['hgt'].sel(level=500.0), levels=np.arange(4980, 6000, 60), colors='white', linewidths=3.0, linestyles='solid', transform=latlon_proj)
 ax.clabel(z500, z500.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True, colors='black')
 
 # 850hPa 等温線
