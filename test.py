@@ -47,7 +47,7 @@ i_day=dt.day
 i_hourZ=dt.hour
 
 ## 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
-(latS, latN, lonW, lonE) = (0, 60, 80, 200)
+(latS, latN, lonW, lonE) = (10, 60, 95, 185)
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
