@@ -24,17 +24,14 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install required dependencies
-      run: |
-        pip install -r requirements.txt
-
     - name: Execute Python script for each folder
       run: |
+        pip install -r requirements.txt
+        git rm ./*.png
         folders=$(ls -d ./Data/*/)
         for folder in $folders
         do
           folder_name=$(basename $folder)
-          git rm ./*.png
           python JRA3Q.py ${folder_name}00
         done
     
