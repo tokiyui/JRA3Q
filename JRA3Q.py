@@ -238,8 +238,6 @@ ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=
 ept = gaussian_filter(ept, sigma=2.0)
 u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
 v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
-#u5 = gaussian_filter(ds4['ugrd'].sel(level=500), sigma=1.0)
-#v5 = gaussian_filter(ds4['vgrd'].sel(level=500), sigma=1.0)
 vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
@@ -248,13 +246,13 @@ ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=
 # FrontoGenesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
 grad_ept = np.array(mpcalc.gradient(ept, deltas=(dy, dx)))
-#mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=2.0)
-mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
+mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=2.0)
+#mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-#grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=2.0), deltas=(dy, dx)))
-grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
+grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=2.0), deltas=(dy, dx)))
+#grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 
 # 極大を抽出する
 autofront = np.zeros_like(ept)
@@ -463,8 +461,8 @@ cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), color
 ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
                                                                                  
 ## 矢羽:データを間引いて描画
-wind_slice2 = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
-ax.barbs(dss['lon'][wind_slice2[0]],     dss['lat'][wind_slice2[1]], dss['10u'].values[wind_slice2], dss['10v'].values[wind_slice2], length=wind_length, pivot='middle', color='black', transform=latlon_proj)
+#wind_slice2 = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
+#ax.barbs(dss['lon'][wind_slice2[0]],     dss['lat'][wind_slice2[1]], dss['10u'].values[wind_slice2], dss['10v'].values[wind_slice2], length=wind_length, pivot='middle', color='black', transform=latlon_proj)
 
 ## H stamp
 #maxid = detect_peaks(dss['prmsl'].values, filter_size=6, dist_cut=2.0)
@@ -557,8 +555,8 @@ cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), color
 ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
 
 ## 矢羽:データを間引いて描画
-wind_slice = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
-ax.barbs(ds4['lon'][wind_slice[0]], ds4['lat'][wind_slice[1]], ds4['ugrd'].sel(level=disp_pl).values[wind_slice], ds4['vgrd'].sel(level=disp_pl).values[wind_slice], length=wind_length, pivot='middle', color='black', transform=latlon_proj)
+#wind_slice = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
+#ax.barbs(ds4['lon'][wind_slice[0]], ds4['lat'][wind_slice[1]], ds4['ugrd'].sel(level=disp_pl).values[wind_slice], ds4['vgrd'].sel(level=disp_pl).values[wind_slice], length=wind_length, pivot='middle', color='black', transform=latlon_proj)
          
 ## H stamp                                                                                                 
 maxid = detect_peaks(ds4['hgt'].sel(level=disp_pl).values, filter_size=10, dist_cut=8.0)
