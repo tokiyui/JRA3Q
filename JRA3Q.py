@@ -248,9 +248,9 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=925))/3.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=4.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
+ept = gaussian_filter(ept, sigma=10.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=4.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=4.0)
 vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=4.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
@@ -468,10 +468,10 @@ contour_tfp = ax.contour(ds4['lon'], ds4['lat'], autofront, levels=[0], colors='
 disp_pl = 850.0    
 # preT hPa面 等温度線
 ds4['tmp'] = (ds4['tmp']).metpy.convert_units(units.degC)  # Kelvin => Celsius
-cn_tmp = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=1.0, linestyles='solid', levels=levels_tmp, transform=latlon_proj)
-ax.clabel(cn_tmp, cn_tmp.levels, fontsize=12, inline=True, inline_spacing=5, colors='red', fmt='%i', rightside_up=True)
-cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=2.0, linestyles='solid', levels=levels_tmp1, transform=latlon_proj)
-ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
+#cn_tmp = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=1.0, linestyles='solid', levels=levels_tmp, transform=latlon_proj)
+#ax.clabel(cn_tmp, cn_tmp.levels, fontsize=12, inline=True, inline_spacing=5, colors='red', fmt='%i', rightside_up=True)
+#cn_tmp1 = ax.contour(ds4['lon'], ds4['lat'],ds4['tmp'].sel(level=disp_pl), colors='red', linewidths=2.0, linestyles='solid', levels=levels_tmp1, transform=latlon_proj)
+#ax.clabel(cn_tmp1, cn_tmp1.levels, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
                                                                                  
 ## 矢羽:データを間引いて描画
 #wind_slice2 = (slice(None, None, wind_slice_n), slice(None, None, wind_slice_n))
