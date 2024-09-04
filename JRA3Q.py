@@ -381,7 +381,7 @@ flag_border=False
 
 ##! 地図の描画範囲を指定
 # 0:極東、1:ASAS領域
-n_area=0
+n_area=1
 if n_area == 1:
     i_area = [105,180,0,65]   #ASAS                                                                        
 else:
