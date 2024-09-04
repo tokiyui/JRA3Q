@@ -141,7 +141,7 @@ dss['lon'].attrs['units'] = 'degrees_east'
 dss = dss.metpy.parse_cf()
 
 # 海面気圧
-#dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
+dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
 
 ##! 読み込むの高度上限の指定：tagLpより下層の等圧面データをXarray Dataset化する
 tagLp = 300
@@ -235,10 +235,10 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = (ds4['ept'].sel(level=925)+ds4['tmp'].sel(level=850)+ds4['tmp'].sel(level=925))/3.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=2.0)
+ept = gaussian_filter(ept, sigma=4.0)
 u = gaussian_filter(ds4['ugrd'].sel(level=925), sigma=2.0)
 v = gaussian_filter(ds4['vgrd'].sel(level=925), sigma=2.0)
-vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=2.0)
+vort = gaussian_filter(ds4['vort'].sel(level=925), sigma=4.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
@@ -246,12 +246,12 @@ ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=
 # FrontoGenesis
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
 grad_ept = np.array(mpcalc.gradient(ept, deltas=(dy, dx)))
-mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=2.0)
+mgntd_grad_ept = gaussian_filter(np.sqrt(grad_ept[0]**2 + grad_ept[1]**2), sigma=4.0)
 #mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=2.0), deltas=(dy, dx)))
+grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=4.0), deltas=(dy, dx)))
 #grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 
 # 極大を抽出する
@@ -261,9 +261,9 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=2.0) 
+autofront = gaussian_filter(autofront, sigma=4.0) 
 
-#autofront[vort < 0] = np.nan
+autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
