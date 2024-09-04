@@ -46,12 +46,12 @@ i_day=dt.day
 i_hourZ=dt.hour
 
 ##! 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
-(latS, latN, lonW, lonE) = (-20, 80, 70, 190)
+(latS, latN, lonW, lonE) = (0, 60, 80, 180)
 
 ## 読み込む要素の指定
-elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
+elem_s_names = ['prmsl','10u','10v'] 
 ##elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot',]
-elems = ['hgt','rh','tmp','ugrd','vgrd']
+elems = ['hgt','tmp']
 
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
@@ -113,13 +113,6 @@ dss = xr.Dataset(
         elem_s_names[0]: (["lat", "lon"], vals_[0]  * units(elem_units[0])),
         elem_s_names[1]: (["lat", "lon"], vals_[1]  * units(elem_units[1])),
         elem_s_names[2]: (["lat", "lon"], vals_[2]  * units(elem_units[2])),
-        elem_s_names[3]: (["lat", "lon"], vals_[3]  * units(elem_units[3])),
-        elem_s_names[4]: (["lat", "lon"], vals_[4]  * units(elem_units[4])),
-        elem_s_names[5]: (["lat", "lon"], vals_[5]  * units(elem_units[5])),
-        elem_s_names[6]: (["lat", "lon"], vals_[6]  * units(elem_units[6])),
-        elem_s_names[7]: (["lat", "lon"], vals_[7]  * units(elem_units[7])),
-        elem_s_names[8]: (["lat", "lon"], vals_[8]  * units(elem_units[8])),
-        elem_s_names[9]: (["lat", "lon"], vals_[9]  * units(elem_units[9])),
     },
     coords={
         "lat": lats,
@@ -129,13 +122,6 @@ dss = xr.Dataset(
 dss[elem_s_names[0]].attrs['units'] = elem_units[0]
 dss[elem_s_names[1]].attrs['units'] = elem_units[1]
 dss[elem_s_names[2]].attrs['units'] = elem_units[2]
-dss[elem_s_names[3]].attrs['units'] = elem_units[3]
-dss[elem_s_names[4]].attrs['units'] = elem_units[4]
-dss[elem_s_names[5]].attrs['units'] = elem_units[5]
-dss[elem_s_names[6]].attrs['units'] = elem_units[6]
-dss[elem_s_names[7]].attrs['units'] = elem_units[7]
-dss[elem_s_names[8]].attrs['units'] = elem_units[8]
-dss[elem_s_names[9]].attrs['units'] = elem_units[9]
 dss['lat'].attrs['units'] = 'degrees_north'
 dss['lon'].attrs['units'] = 'degrees_east'
 
@@ -193,9 +179,6 @@ ds4 = xr.Dataset(
     {
         elems[0]: (["level","lat", "lon"], val4_[0]  * units(elem_units[0])),
         elems[1]: (["level","lat", "lon"], val4_[1]  * units(elem_units[1])),
-        elems[2]: (["level","lat", "lon"], val4_[2]  * units(elem_units[2])),
-        elems[3]: (["level","lat", "lon"], val4_[3]  * units(elem_units[3])),
-        elems[4]: (["level","lat", "lon"], val4_[4]  * units(elem_units[4])),
     },
     coords={
         "level": levels,
@@ -205,9 +188,6 @@ ds4 = xr.Dataset(
 )
 ds4[elems[0]].attrs['units'] = elem_units[0]
 ds4[elems[1]].attrs['units'] = elem_units[1]
-ds4[elems[2]].attrs['units'] = elem_units[2]
-ds4[elems[3]].attrs['units'] = elem_units[3]
-ds4[elems[4]].attrs['units'] = elem_units[4]
 ds4['level'].attrs['units'] = 'hPa'
 ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
