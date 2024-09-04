@@ -50,7 +50,8 @@ i_hourZ=dt.hour
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
-elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot',]
+##elems = ['depr','hgt','rh','tmp','reld', 'relv','spfh','strm','vvel','ugrd','vgrd','vpot',]
+elems = ['hgt','rh','tmp','ugrd','vgrd']
 
 ## データサイズを取得するために、GRIB2を読み込む
 folder_nm = folder_nm_temp.format(i_year,i_month,i_day)
@@ -195,13 +196,6 @@ ds4 = xr.Dataset(
         elems[2]: (["level","lat", "lon"], val4_[2]  * units(elem_units[2])),
         elems[3]: (["level","lat", "lon"], val4_[3]  * units(elem_units[3])),
         elems[4]: (["level","lat", "lon"], val4_[4]  * units(elem_units[4])),
-        elems[5]: (["level","lat", "lon"], val4_[5]  * units(elem_units[5])),
-        elems[6]: (["level","lat", "lon"], val4_[6]  * units(elem_units[6])),
-        elems[7]: (["level","lat", "lon"], val4_[7]  * units(elem_units[7])),
-        elems[8]: (["level","lat", "lon"], val4_[8]  * units(elem_units[8])),
-        elems[9]: (["level","lat", "lon"], val4_[9]  * units(elem_units[9])),
-        elems[10]: (["level","lat", "lon"], val4_[10]  * units(elem_units[10])),
-        elems[11]: (["level","lat", "lon"], val4_[11]  * units(elem_units[11])),
     },
     coords={
         "level": levels,
@@ -214,13 +208,6 @@ ds4[elems[1]].attrs['units'] = elem_units[1]
 ds4[elems[2]].attrs['units'] = elem_units[2]
 ds4[elems[3]].attrs['units'] = elem_units[3]
 ds4[elems[4]].attrs['units'] = elem_units[4]
-ds4[elems[5]].attrs['units'] = elem_units[5]
-ds4[elems[6]].attrs['units'] = elem_units[6]
-ds4[elems[7]].attrs['units'] = elem_units[7]
-ds4[elems[8]].attrs['units'] = elem_units[8]
-ds4[elems[9]].attrs['units'] = elem_units[9]
-ds4[elems[10]].attrs['units'] = elem_units[10]
-ds4[elems[11]].attrs['units'] = elem_units[11]
 ds4['level'].attrs['units'] = 'hPa'
 ds4['lat'].attrs['units'] = 'degrees_north'
 ds4['lon'].attrs['units'] = 'degrees_east'
