@@ -20,7 +20,8 @@ import matplotlib as mpl
 import scipy.ndimage as ndimage
 
 file_nm_temp_s = 'anl_surf.{0:4d}{1:02d}{2:02d}{3:02d}'
-file_nm_temp_p = 'anl_p_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'    
+file_nm_temp_p = 'anl_p_{0}.{1:4d}{2:02d}{3:02d}{4:02d}'
+file_nm_temp_l = 'TL479_surf.grib2'
 folder_nm_temp = './Data/{0:4d}{1:02d}{2:02d}/'
 
 ##! 読み込み期間の最初の時刻（UTC）,読み込む時刻の数、時間間隔の指定
@@ -46,7 +47,7 @@ i_day=dt.day
 i_hourZ=dt.hour
 
 ##! 読み込むGPVの範囲（緯度・経度で東西南北の境界）を指定
-(latS, latN, lonW, lonE) = (-20, 80, 70, 190)
+(latS, latN, lonW, lonE) = (-20, 80, 70, 210)
 
 ## 読み込む要素の指定
 elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
@@ -106,6 +107,10 @@ for g in grbs:
         i_elem = elem_names.index(g['parameterName'])
         vals_[i_elem], _, _ = g.data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
+## 地表面ジオポテンシャル高度
+grbs = pygrib.open(file_nm_temp_l)
+surf = grbs[1].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)[0]
+
 ## Xarray Dataset 作成
 dss = xr.Dataset(
     {
@@ -140,6 +145,14 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
+w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
+surf = gaussian_filter(surf, sigma=1)
+
+dss['prmsl'] = (["lat", "lon"], np.where(surf >= 8000, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[0]))
+# wが5以下の場所のみフィルタリング
+for i in range(1, 20):
+    dss['prmsl'] = (["lat", "lon"], np.where(w <= i, gaussian_filter(dss['prmsl'].values, sigma=(10/i)), dss['prmsl'].values) * units(elem_units[0]))
+    
 # 海面気圧
 dss['prmsl'] = (["lat", "lon"], gaussian_filter(dss['prmsl'].values, sigma=2.0) * units(elem_units[3]))
 
