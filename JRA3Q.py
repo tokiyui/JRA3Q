@@ -145,7 +145,7 @@ dss['lon'].attrs['units'] = 'degrees_east'
 
 dss = dss.metpy.parse_cf()
 
-w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4)
+w = gaussian_filter(np.sqrt(dss['10u'].values ** 2 + dss['10v'].values ** 2), sigma=4.0)
 surf = gaussian_filter(surf, sigma=1)
 
 dss['prmsl'] = (["lat", "lon"], np.where(surf >= 8000, gaussian_filter(dss['prmsl'].values, sigma=4), dss['prmsl'].values) * units(elem_units[0]))
@@ -274,7 +274,7 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=4.0) 
+autofront = gaussian_filter(autofront, sigma=10.0) 
 
 autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
