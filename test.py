@@ -50,7 +50,7 @@ i_hourZ=dt.hour
 (latS, latN, lonW, lonE) = (10, 60, 95, 185)
 
 ## 読み込む要素の指定
-elem_s_names = ['pt', 'sdwe', 'sp', 'prmsl', '2t', '2ttd', '2sh', '2r', '10u', '10v'] 
+elem_s_names = ['prmsl','10u','10v'] 
 elems = ['hgt', 'tmp']
 
 ## データサイズを取得するために、GRIB2を読み込む
@@ -117,13 +117,6 @@ dss = xr.Dataset(
         elem_s_names[0]: (["lat", "lon"], vals_[0]  * units(elem_units[0])),
         elem_s_names[1]: (["lat", "lon"], vals_[1]  * units(elem_units[1])),
         elem_s_names[2]: (["lat", "lon"], vals_[2]  * units(elem_units[2])),
-        elem_s_names[3]: (["lat", "lon"], vals_[3]  * units(elem_units[3])),
-        elem_s_names[4]: (["lat", "lon"], vals_[4]  * units(elem_units[4])),
-        elem_s_names[5]: (["lat", "lon"], vals_[5]  * units(elem_units[5])),
-        elem_s_names[6]: (["lat", "lon"], vals_[6]  * units(elem_units[6])),
-        elem_s_names[7]: (["lat", "lon"], vals_[7]  * units(elem_units[7])),
-        elem_s_names[8]: (["lat", "lon"], vals_[8]  * units(elem_units[8])),
-        elem_s_names[9]: (["lat", "lon"], vals_[9]  * units(elem_units[9])),
     },
     coords={
         "lat": lats,
@@ -133,13 +126,6 @@ dss = xr.Dataset(
 dss[elem_s_names[0]].attrs['units'] = elem_units[0]
 dss[elem_s_names[1]].attrs['units'] = elem_units[1]
 dss[elem_s_names[2]].attrs['units'] = elem_units[2]
-dss[elem_s_names[3]].attrs['units'] = elem_units[3]
-dss[elem_s_names[4]].attrs['units'] = elem_units[4]
-dss[elem_s_names[5]].attrs['units'] = elem_units[5]
-dss[elem_s_names[6]].attrs['units'] = elem_units[6]
-dss[elem_s_names[7]].attrs['units'] = elem_units[7]
-dss[elem_s_names[8]].attrs['units'] = elem_units[8]
-dss[elem_s_names[9]].attrs['units'] = elem_units[9]
 dss['lat'].attrs['units'] = 'degrees_north'
 dss['lon'].attrs['units'] = 'degrees_east'
 
