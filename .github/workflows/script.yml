@@ -34,6 +34,7 @@ jobs:
         for folder in $folders
         do
           folder_name=$(basename $folder)
+          git rm ./*.png
           python JRA3Q.py ${folder_name}00
         done
     
@@ -51,7 +52,6 @@ jobs:
         git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
         git config --global user.name "${GITHUB_ACTOR}"
         git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-        git rm ./*.png
         git add ./*.png
         git diff --cached --quiet || git commit -m "Add Pictures"
         git push origin main
