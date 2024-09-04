@@ -500,8 +500,8 @@ for i in range(len(minid[0])):
 fig.text(0.5,0.01,"JRA3Q " + dt_str + " Psea,T850",ha='center',va='bottom', size=18)
 
 ## Output
-output_fig_nm="{}Z_surf.jpg".format(dt.strftime("%Y%m%d%H"))
-plt.savefig(output_fig_nm, format="jpg")
+output_fig_nm="{}Z_surf.png".format(dt.strftime("%Y%m%d%H"))
+plt.savefig(output_fig_nm, format="png")
 
 ##  500hPa高度・渦度天気図
 #! 表示する気圧面
@@ -596,5 +596,5 @@ gl.ylocator = mticker.FixedLocator(yticks)
 ## Title                                                                       
 fig.text(0.5,0.01,"JRA3Q " + dt_str + " Z500,VORT",ha='center',va='bottom', size=18)
 ## Output
-output_fig_nm="{}Z_500hPa.jpg".format(dt.strftime("%Y%m%d%H"))
-plt.savefig(output_fig_nm, format="jpg")
+output_fig_nm="{}Z_500hPa.png".format(dt.strftime("%Y%m%d%H"))
+plt.savefig(output_fig_nm, format="png")
