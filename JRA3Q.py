@@ -275,9 +275,9 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=8.0) 
+autofront = gaussian_filter(autofront, sigma=1.0) 
 
-#autofront[vort < 0] = np.nan
+autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
