@@ -265,7 +265,7 @@ grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
 #grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=1.0), deltas=(dy, dx)))
-fg = gaussian_filter(fg, sigma=1.0)
+fg = gaussian_filter(fg, sigma=10.0)
 grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 
 # 極大を抽出する
