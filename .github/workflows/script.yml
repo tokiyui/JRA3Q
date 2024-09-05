@@ -27,13 +27,13 @@ jobs:
     - name: Execute Python script for each folder
       run: |
         pip install -r requirements.txt
-        git rm ./*.png
+        git rm ./*surf.png
+        git rm ./*500hPa.png
         folders=$(ls -d ./Data/*/)
         for folder in $folders
         do
           folder_name=$(basename $folder)
           python JRA3Q.py ${folder_name}00
-          python test.py ${folder_name}00
         done
     
     - name: Check for Git changes
