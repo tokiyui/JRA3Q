@@ -277,8 +277,8 @@ for i in range(ept.shape[0]):
 # ガウシアンフィルタを適用
 autofront = gaussian_filter(autofront, sigma=8.0) 
 
-autofront[vort < 0] = np.nan
-autofront[fg < 0] = np.nan
+#autofront[vort < 0] = np.nan
+#autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
 # 図法の座標 => pixel座標 => 図の座標　と3回の変換を行う
