@@ -245,13 +245,13 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'], ds4['tmp'], d
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # 前線客観解析
-ept = (ds4['ept'].sel(level=925) + ds4['tmp'].sel(level=850)) / 2.0
+ept = (ds4['ept'].sel(level=850) + ds4['tmp'].sel(level=850)) / 2.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=2.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=2.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=2.0)
-vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=2.0)
+ept = gaussian_filter(ept, sigma=4.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=4.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=4.0)
+vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=4.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
@@ -275,7 +275,7 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=2.0) 
+autofront = gaussian_filter(autofront, sigma=4.0) 
 
 autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
