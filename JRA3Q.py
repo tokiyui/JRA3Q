@@ -248,7 +248,7 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = (ds4['ept'].sel(level=925) + ds4['tmp'].sel(level=850)) / 2.0
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=1.0)
+ept = gaussian_filter(ept, sigma=2.0)
 u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=2.0)
 v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=2.0)
 vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=2.0)
@@ -275,7 +275,7 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=1.0) 
+autofront = gaussian_filter(autofront, sigma=2.0) 
 
 autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
