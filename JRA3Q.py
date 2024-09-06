@@ -463,7 +463,7 @@ cn_pre  = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_pre, colors='b
 cn_preb = ax.contour(dss['lon'], dss['lat'], dss['prmsl'], levels_preb, colors='black', linewidths=3.0, linestyles='solid', transform=latlon_proj)
 ax.clabel(cn_pre, cn_pre.levels, fontsize=11, inline=True, inline_spacing=1, fmt='%i', rightside_up=True)
 
-contour_tfp = ax.contour(ds4['lon'], ds4['lat'], autofront, levels=[0], colors='green', linewidths=2.0, linestyles='solid', transform=latlon_proj) 
+#contour_tfp = ax.contour(ds4['lon'], ds4['lat'], autofront, levels=[0], colors='green', linewidths=2.0, linestyles='solid', transform=latlon_proj) 
 
 #! 表示する気圧面
 disp_pl = 850.0    
