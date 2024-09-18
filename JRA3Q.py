@@ -248,7 +248,7 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = 0.25 * ds4['ept'].sel(level=850) + 0.75 * ds4['tmp'].sel(level=850)
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=4.0)
+ept = gaussian_filter(ept, sigma=24.0)
 u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=4.0)
 v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=4.0)
 vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=4.0)
