@@ -249,8 +249,8 @@ ept = 0.25 * ds4['ept'].sel(level=850) + 0.75 * ds4['tmp'].sel(level=850)
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=24.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=4.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=4.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=24.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=24.0)
 vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=4.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
