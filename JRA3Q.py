@@ -245,7 +245,7 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'], ds4['tmp'], d
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # 前線客観解析
-ept = (ds4['ept'].sel(level=850) + ds4['tmp'].sel(level=850)) / 2.0
+ept = 0.25 * ds4['ept'].sel(level=850) + 0.75 * ds4['tmp'].sel(level=850)
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=10.0)
