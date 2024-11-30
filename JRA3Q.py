@@ -245,13 +245,13 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'], ds4['tmp'], d
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # 前線客観解析
-ept = 0.2 * ds4['ept'].sel(level=850) + 0.8 * ds4['tmp'].sel(level=850)
+ept = 0.5 * ds4['ept'].sel(level=850) + 0.5 * ds4['tmp'].sel(level=850)
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=24.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=12.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=12.0)
-vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=12.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=4.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=4.0)
+vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=4.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
@@ -265,7 +265,7 @@ grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
 #grad_fg = np.array(mpcalc.gradient(gaussian_filter(fg, sigma=1.0), deltas=(dy, dx)))
-fg = gaussian_filter(fg, sigma=12.0)
+fg = gaussian_filter(fg, sigma=4.0)
 grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
 
 # 極大を抽出する
@@ -277,7 +277,7 @@ for i in range(ept.shape[0]):
 # ガウシアンフィルタを適用
 autofront = gaussian_filter(autofront, sigma=4.0) 
 
-autofront[vort < 0] = np.nan
+#autofront[vort < 0] = np.nan
 autofront[fg < 0] = np.nan
 
 ## 緯度経度で指定したポイントの図上の座標などを取得する関数 transform_lonlat_to_figure() 
