@@ -248,10 +248,10 @@ ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 ept = 0.5 * ds4['ept'].sel(level=850) + 0.5 * ds4['tmp'].sel(level=850)
 
 # ガウシアンフィルタを適用
-ept = gaussian_filter(ept, sigma=2.0)
-u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=2.0)
-v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=2.0)
-vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=2.0)
+ept = gaussian_filter(ept, sigma=4.0)
+u = gaussian_filter(ds4['ugrd'].sel(level=850), sigma=4.0)
+v = gaussian_filter(ds4['vgrd'].sel(level=850), sigma=4.0)
+vort = gaussian_filter(ds4['vort'].sel(level=850), sigma=4.0)
 
 ds4['hgt'] = (["level", "lat", "lon"], gaussian_filter(ds4['hgt'].values, sigma=2.0) * units(elem_units[1]))
 ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=2.0) * units(elem_units[3]))
@@ -264,8 +264,8 @@ grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
 f = grad_ept * vort #相当温位傾度と渦度の積を前線解析に利用
-f = gaussian_filter(f, sigma=2.0)
-grad_fg = np.array(mpcalc.gradient(fg, deltas=(dy, dx)))
+f = gaussian_filter(f, sigma=4.0)
+grad_fg = np.array(mpcalc.gradient(f, deltas=(dy, dx)))
 
 # 極大を抽出する
 autofront = np.zeros_like(ept)
@@ -274,7 +274,7 @@ for i in range(ept.shape[0]):
         autofront[i, j] = np.dot(grad_fg[:, i, j], grad_ept[:, i, j] / mgntd_grad_ept[i, j])  
 
 # ガウシアンフィルタを適用
-autofront = gaussian_filter(autofront, sigma=2.0) 
+autofront = gaussian_filter(autofront, sigma=4.0) 
 
 autofront[vort < 0] = np.nan
 #autofront[fg < 0] = np.nan
