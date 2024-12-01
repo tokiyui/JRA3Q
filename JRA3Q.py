@@ -263,7 +263,7 @@ mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
-f = grad_ept * vort #相当温位傾度と渦度の積を前線解析に利用
+f = mgntd_grad_ept * vort #相当温位傾度と渦度の積を前線解析に利用
 f = gaussian_filter(f, sigma=4.0)
 grad_fg = np.array(mpcalc.gradient(f, deltas=(dy, dx)))
 
