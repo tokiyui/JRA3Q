@@ -245,7 +245,7 @@ ds4['ept'] = mpcalc.equivalent_potential_temperature(ds4['level'], ds4['tmp'], d
 ds4['vort'] = mpcalc.vorticity(ds4['ugrd'],ds4['vgrd'])
 
 # 前線客観解析
-ept = 0.5 * ds4['ept'].sel(level=850) + 0.5 * ds4['tmp'].sel(level=850)
+ept = ds4['ept'].sel(level=850) #+ 0.5 * ds4['tmp'].sel(level=850)
 
 # ガウシアンフィルタを適用
 ept = gaussian_filter(ept, sigma=4.0)
@@ -260,6 +260,7 @@ ds4['tmp'] = (["level", "lat", "lon"], gaussian_filter(ds4['tmp'].values, sigma=
 dx, dy = mpcalc.lat_lon_grid_deltas(ds4['lon'], ds4['lat'])
 grad_ept = np.array(mpcalc.gradient(ept, deltas=(dy, dx)))
 mgntd_grad_ept = np.sqrt(grad_ept[0]**2 + grad_ept[1]**2)
+mgntd_grad_ept = gaussian_filter(mgntd_grad_ept, sigma=4.0)
 grad_u = np.array(mpcalc.gradient(u, deltas=(dy, dx)))
 grad_v = np.array(mpcalc.gradient(v, deltas=(dy, dx)))
 fg = -(grad_u[1]*grad_ept[1]*grad_ept[1]+grad_v[0]*grad_ept[0]*grad_ept[0]+grad_ept[1]*grad_ept[0]*(grad_u[0]+grad_v[1]))/mgntd_grad_ept*100000*3600
